@@ -1,96 +1,1034 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kiến thức PLC | Kỹ thuật Tự động hóa</title>
-  <meta name="description" content="Website cá nhân về PLC, tự động hóa công nghiệp, Machine Vision và điện điều khiển.">
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>PLC Knowledge — Mitsubishi FX Wiki</title>
+<style>
+:root{--bg:#0b1020;--panel:#121a2d;--panel2:#18233a;--text:#eaf0ff;--muted:#9aa9c5;--accent:#55d6be;--accent2:#7aa7ff;--line:#263653;--warn:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font-family:Inter,Segoe UI,Arial,sans-serif;line-height:1.6}
+header{position:sticky;top:0;z-index:5;background:rgba(11,16,32,.95);border-bottom:1px solid var(--line);backdrop-filter:blur(10px)}
+.top{max-width:1400px;margin:auto;padding:14px 20px;display:flex;gap:18px;align-items:center}.brand{font-weight:800;font-size:20px;white-space:nowrap}.brand span{color:var(--accent)}
+.search{flex:1;max-width:650px}.search input{width:100%;padding:12px 15px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--text);outline:none}
+.layout{max-width:1400px;margin:auto;display:grid;grid-template-columns:260px 1fr;min-height:calc(100vh - 66px)}
+aside{border-right:1px solid var(--line);padding:18px 12px;position:sticky;top:66px;height:calc(100vh - 66px);overflow:auto}
+nav button{display:block;width:100%;text-align:left;background:none;border:0;color:var(--muted);padding:9px 12px;border-radius:8px;cursor:pointer;font-size:14px}nav button:hover,nav button.active{background:var(--panel2);color:var(--text)}
+main{padding:30px 38px;min-width:0}.hero{background:linear-gradient(135deg,#15243e,#10182b);border:1px solid var(--line);border-radius:18px;padding:32px;margin-bottom:24px}.hero h1{font-size:38px;margin:0 0 8px}.hero p{color:var(--muted);max-width:850px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:15px}.card{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:18px;cursor:pointer}.card:hover{border-color:#3c5b88}.card h3{margin:0 0 6px}.card p{margin:0;color:var(--muted);font-size:14px}
+.section{margin:28px 0}.section h2{border-bottom:1px solid var(--line);padding-bottom:9px}.tag{display:inline-block;padding:3px 8px;border:1px solid var(--line);border-radius:999px;color:var(--accent);font-size:12px;margin:2px}
+pre{background:#080d18;border:1px solid var(--line);padding:15px;border-radius:10px;overflow:auto;color:#dce7ff}.ladder{font-family:monospace;white-space:pre;background:#fff;color:#111;border-radius:8px;padding:15px;overflow:auto}
+table{width:100%;border-collapse:collapse;background:var(--panel);border-radius:10px;overflow:hidden}th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left}th{color:var(--accent)}
+.notice{border-left:4px solid var(--warn);background:#211d12;padding:12px 15px;margin:15px 0}.muted{color:var(--muted)}.back{margin-bottom:18px;color:var(--accent);cursor:pointer}.result{padding:12px;border-bottom:1px solid var(--line);cursor:pointer}.result:hover{background:var(--panel2)}
+footer{color:var(--muted);padding:35px 0;border-top:1px solid var(--line);margin-top:50px}
+@media(max-width:850px){.layout{grid-template-columns:1fr}aside{position:relative;top:0;height:auto;border-right:0;border-bottom:1px solid var(--line)}main{padding:20px}.hero h1{font-size:29px}.top{flex-wrap:wrap}.search{order:3;flex-basis:100%}}
+
+/* Dictionary V3 */
+.dict-toolbar{display:grid;grid-template-columns:minmax(260px,1fr) 220px 140px;gap:10px;margin:16px 0}
+.dict-search{display:flex;align-items:center;gap:8px;background:var(--card,#fff);border:1px solid var(--border,#d9dee7);border-radius:12px;padding:0 12px}
+.dict-search input{border:0;outline:0;background:transparent;width:100%;padding:12px 4px;font-size:14px}
+.dict-toolbar select{border:1px solid var(--border,#d9dee7);border-radius:12px;padding:0 12px;background:var(--card,#fff);font-size:14px}
+.dict-summary{margin:8px 0 12px;color:var(--muted,#667085);font-size:13px}
+.table-wrap{overflow:auto;border:1px solid var(--border,#d9dee7);border-radius:14px;background:var(--card,#fff)}
+.dict-table{width:100%;border-collapse:collapse;min-width:850px}
+.dict-table th,.dict-table td{padding:11px 12px;border-bottom:1px solid var(--border,#edf0f4);text-align:left;vertical-align:middle}
+.dict-table th{position:sticky;top:0;background:var(--card,#fff);z-index:1;font-size:12px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted,#667085)}
+.dict-table tr:hover td{background:rgba(80,120,255,.035)}
+.mnemonic-btn{border:0;background:transparent;padding:0;font-weight:700;cursor:pointer;color:var(--accent,#315efb);font-family:inherit;font-size:14px}
+.mnemonic-btn:hover{text-decoration:underline}
+.group-pill{display:inline-block;padding:4px 8px;border-radius:999px;background:rgba(80,120,255,.08);font-size:12px;white-space:nowrap}
+.detail-btn{border:1px solid var(--border,#d9dee7);background:var(--card,#fff);border-radius:8px;padding:6px 9px;cursor:pointer;white-space:nowrap}
+.empty-row{text-align:center!important;padding:30px!important;color:var(--muted,#667085)}
+@media(max-width:760px){.dict-toolbar{grid-template-columns:1fr}}
+
+/* GX Works2-like Ladder screenshots */
+.ladder-shot{margin:14px 0 22px;border:1px solid #bfc5cc;border-radius:7px;overflow:hidden;background:#f4f5f6;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+.ladder-shot-title{height:34px;display:flex;justify-content:space-between;align-items:center;padding:0 12px;background:#e7e9ec;border-bottom:1px solid #bfc5cc;font-size:12px;color:#30343b;font-weight:600}
+.ladder-svg{display:block;width:100%;height:auto;background:#fff}
+.gx-bg{fill:#fff}
+.rail{stroke:#1d1f23;stroke-width:3}
+.wire{stroke:#222;stroke-width:2}
+.addr{font:12px Arial;fill:#6c737a}
+.contact{font:34px monospace;fill:#111}
+.device{font:16px Consolas,monospace;fill:#111}
+.block{font:17px Consolas,monospace;font-weight:600;fill:#111}
+.coil{font:17px Consolas,monospace;fill:#111}
+.caption{font:12px Arial;fill:#687078}
+.ladder-content text{dominant-baseline:middle}
+
+/* Real GX Works2 screenshots */
+.real-ladder-shot{margin:16px 0 24px;border:1px solid #c5cbd2;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.07)}
+.real-ladder-title{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#eceef0;border-bottom:1px solid #c5cbd2;font-size:12px;font-weight:600;color:#333}
+.real-ladder-shot img{display:block;width:100%;height:auto;background:#fff}
+.real-ladder-caption{padding:9px 12px;font-size:13px;color:#5f6872;border-top:1px solid #e5e7eb}
+
+.command-diagram{margin:14px 0 22px;border:1px solid #c5cbd2;border-radius:8px;overflow:hidden;background:#fff;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+.command-diagram-head{display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:#eef0f2;border-bottom:1px solid #c5cbd2;font-size:12px;color:#30343b}
+.command-svg{display:block;width:100%;height:auto}.svg-bg{fill:#fff}.svg-rail{stroke:#17191c;stroke-width:3}.svg-wire{stroke:#222;stroke-width:2}.svg-address{font:12px Arial;fill:#69717a}.svg-desc{font:12px Arial;fill:#66717a}.svg-code{font:15px Consolas,monospace;font-weight:600;fill:#202328}.command-svg .contact{font:34px Consolas,monospace;fill:#111}.command-svg .device{font:16px Consolas,monospace;fill:#111}.command-svg .block{font:17px Consolas,monospace;font-weight:600;fill:#111}
+
+/* Detailed Ladder lessons */
+.lesson{background:var(--card,#111827);border:1px solid var(--border,#26354f);border-radius:16px;margin:18px 0;overflow:hidden}
+.lesson-head{padding:18px 20px;background:rgba(255,255,255,.025);border-bottom:1px solid var(--border,#26354f)}
+.lesson-head h3{margin:0 0 7px}.lesson-head p{margin:0;color:var(--muted,#aab4c4)}
+.lesson-body{padding:20px}.lesson-body h4{margin:20px 0 8px}.lesson-body ul,.lesson-body ol{line-height:1.8}
+.lesson-image{margin:16px 0;border:1px solid #3a4658;border-radius:9px;overflow:hidden;background:#fff}
+.lesson-image-title{display:flex;justify-content:space-between;padding:9px 12px;background:#e9ecef;color:#252a30;font-size:12px}
+.lesson-svg{display:block;width:100%;height:auto}.lesson-bg{fill:#fff}.lesson-rail{stroke:#111;stroke-width:3}.lesson-wire{stroke:#111;stroke-width:2}
+.lesson-addr{font:12px Arial;fill:#69717a}.lesson-contact{font:34px Consolas,monospace;fill:#111}.lesson-dev{font:15px Consolas,monospace;fill:#111}.lesson-coil{font:18px Consolas,monospace;font-weight:600;fill:#111}.lesson-block{font:17px Consolas,monospace;font-weight:700;fill:#111}.lesson-note{font:13px Arial;fill:#4b5563}
+.lesson-code{background:#080d16;color:#dbe5f5;border:1px solid #29354a;border-radius:10px;padding:14px;overflow:auto;line-height:1.6}
+.lesson-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.lesson-box{padding:14px;border:1px solid #29354a;border-radius:10px;background:rgba(255,255,255,.02)}
+@media(max-width:760px){.lesson-grid{grid-template-columns:1fr}}
+
+/* === Unified learning standard === */
+.topic-hero{padding:20px;border:1px solid var(--border,#29354a);border-radius:16px;background:linear-gradient(135deg,rgba(50,100,200,.10),rgba(255,255,255,.02));margin-bottom:18px}
+.topic-hero h2{margin:0 0 8px}.topic-hero p{margin:0;color:var(--muted,#aab4c4);line-height:1.65}
+.learning-section{margin:18px 0}.learning-section h3{margin-bottom:9px}
+.learning-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.learning-box{border:1px solid var(--border,#29354a);border-radius:12px;padding:14px;background:rgba(255,255,255,.02);line-height:1.65}
+.learning-box b{display:block;margin-bottom:4px}
+.code-box{background:#080d16;color:#dbe5f5;border:1px solid #29354a;border-radius:10px;padding:14px;overflow:auto;line-height:1.65}
+.result-box{border-left:4px solid #4b8cff;padding:12px 15px;background:rgba(75,140,255,.07);border-radius:8px}
+.error-box{border-left:4px solid #e6a23c;padding:12px 15px;background:rgba(230,162,60,.07);border-radius:8px}
+.practice-box{border:1px dashed #52627a;border-radius:12px;padding:15px;margin-top:12px}
+.step-list{line-height:1.8}
+@media(max-width:760px){.learning-grid{grid-template-columns:1fr}}
+
+.verified-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#e7f6ec;color:#216e39;font-size:12px;font-weight:700}
+
+.structure-intro{
+  background:#f8fafc;
+  border:1px solid #dbe2ea;
+  border-radius:14px;
+  padding:18px 20px;
+  margin-bottom:18px;
+}
+.structure-intro h2{margin-top:0}
+.source-note{
+  margin-bottom:0;
+  padding:10px 12px;
+  background:#fff8e8;
+  border-left:4px solid #d99a2b;
+  border-radius:6px;
+}
+.structure-toolbar{
+  display:grid;
+  grid-template-columns:minmax(220px,1fr) 220px 120px;
+  gap:10px;
+  margin:16px 0;
+}
+.structure-toolbar input,
+.structure-toolbar select{
+  padding:11px 12px;
+  border:1px solid #cbd5e1;
+  border-radius:9px;
+  background:#fff;
+}
+.structure-card{
+  background:#fff;
+  border:1px solid #d8dee7;
+  border-radius:14px;
+  margin:16px 0;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.structure-card-head{
+  display:flex;
+  justify-content:space-between;
+  gap:15px;
+  padding:14px 18px;
+  background:#eef2f6;
+  border-bottom:1px solid #d8dee7;
+}
+.structure-card-head h3{margin:7px 0 0;font-size:22px}
+.structure-card-head h3 small{
+  font-size:14px;
+  font-weight:400;
+  color:#64748b;
+}
+.structure-kind,.structure-fnc,.structure-page{
+  display:inline-block;
+  padding:4px 8px;
+  margin-right:5px;
+  border-radius:6px;
+  font-size:12px;
+  background:#e2e8f0;
+}
+.structure-fnc{font-family:monospace}
+.structure-page{margin-right:0;background:#fff}
+.structure-grid{
+  display:grid;
+  grid-template-columns:minmax(260px,1fr) minmax(360px,1.25fr);
+  gap:18px;
+  padding:18px;
+}
+.structure-label{
+  font-size:12px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+  color:#64748b;
+  margin:8px 0;
+}
+.structure-code{
+  margin:0 0 14px;
+  padding:12px;
+  background:#111827;
+  color:#f8fafc;
+  border-radius:9px;
+  overflow:auto;
+  white-space:pre-wrap;
+  font-family:Consolas,monospace;
+}
+.structure-figure{
+  margin:0;
+  padding:10px;
+  border:1px solid #dbe2ea;
+  border-radius:10px;
+  background:#f8fafc;
+}
+.structure-figure img{
+  width:100%;
+  display:block;
+  height:auto;
+}
+.structure-figure figcaption{
+  padding:8px 4px 2px;
+  font-size:12px;
+  color:#64748b;
+}
+.empty-state{
+  padding:30px;
+  text-align:center;
+  background:#f8fafc;
+  border-radius:10px;
+}
+@media(max-width:800px){
+  .structure-toolbar{grid-template-columns:1fr}
+  .structure-grid{grid-template-columns:1fr}
+}
+
+</style>
 </head>
 <body>
-<header class="nav">
-  <a class="logo" href="#home"><span>PLC</span> ENGINEER</a>
-  <button class="menu" aria-label="Mở menu">☰</button>
-  <nav>
-    <a href="#home">Trang chủ</a>
-    <a href="#skills">Kỹ năng</a>
-    <a href="#knowledge">Kiến thức</a>
-    <a href="#projects">Dự án</a>
-    <a href="#about">Giới thiệu</a>
-  </nav>
-</header>
+<header><div class="top"><div class="brand">⚙ <span>PLC</span> Knowledge</div><div class="search"><input id="search" placeholder="🔎 Tìm lệnh, device, bài học, ví dụ..."></div></div></header>
+<div class="layout">
+<aside><nav id="nav"></nav></aside>
+<main id="app"></main>
+</div>
+<script>
+const sections=[
+["home","🏠 Trang chủ"],["roadmap","🧭 Lộ trình học"],["foundation","📚 Nền tảng PLC"],["wiring","🔌 Đấu dây & NPN/PNP"],["devices","🧠 Device Mitsubishi"],["basic","⚡ Basic Instructions"],["timers","⏱ Timer & Counter"],["ladder","🪜 Ladder Logic"],["register","🔢 Register & Data"],["applied","🧩 Applied / FNC"],["advanced","🚀 Điều khiển nâng cao"],["hmi","🖥 HMI & Communication"],["practice","🧪 Bài tập thực hành"],["trouble","🛠 Troubleshooting"],["dictionary","📚 Instruction Dictionary"],["structure","🧱 Cấu trúc lệnh"],["reference","📖 Tra cứu nhanh"]
+];
 
-<main>
-<section id="home" class="hero">
-  <div class="grid-bg"></div>
-  <div class="hero-content">
-    <p class="eyebrow">INDUSTRIAL AUTOMATION • PLC • MACHINE VISION</p>
-    <h1>KỸ THUẬT<br><span>PLC & TỰ ĐỘNG HÓA</span></h1>
-    <p class="lead">Chia sẻ kiến thức thực tế về lập trình PLC, điện điều khiển, cảm biến, servo và Machine Vision.</p>
-    <div class="buttons">
-      <a class="btn primary" href="#knowledge">Khám phá kiến thức →</a>
-      <a class="btn" href="#projects">Xem dự án</a>
+const devices=[
+["X","Input","Bit","Đọc trạng thái thiết bị đầu vào"],["Y","Output","Bit","Điều khiển ngõ ra"],["M","Auxiliary Relay","Bit","Relay nội bộ"],["S","State Relay","Bit","Điều khiển trình tự/step"],["T","Timer","Bit/Word","Timer và giá trị hiện tại"],["C","Counter","Bit/Word","Bộ đếm"],["D","Data Register","Word","Lưu và xử lý dữ liệu"],["R","File Register","Word","Lưu dữ liệu theo vùng file"],["Z/V","Index Register","Word","Định địa chỉ gián tiếp/index"],["P","Pointer","Program","Con trỏ nhảy/call"],["K","Decimal Constant","Constant","Hằng số thập phân"],["H","Hex Constant","Constant","Hằng số hexadecimal"]
+];
+
+const instructions=[
+["LD","Basic","LD X0","Bắt đầu một mạch logic bằng tiếp điểm thường mở."],
+["LDI","Basic","LDI X0","Logic phủ định của LD."],
+["AND","Basic","LD X0\\nAND X1","Điều kiện AND: cả hai phải ON."],
+["ANI","Basic","LD X0\\nANI X1","AND với điều kiện phủ định."],
+["OR","Basic","LD X0\\nOR X1","Điều kiện OR: một trong các điều kiện ON."],
+["ORI","Basic","LD X0\\nORI X1","OR với điều kiện phủ định."],
+["ANB","Basic","ANB","Nối hai khối logic bằng AND."],
+["ORB","Basic","ORB","Nối hai khối logic bằng OR."],
+["OUT","Basic","OUT Y0","Xuất kết quả logic ra device."],
+["SET","Basic","SET M0","Set bit ON và giữ trạng thái cho đến khi reset."],
+["RST","Basic","RST M0","Reset bit/device về OFF hoặc giá trị phù hợp."],
+["PLS","Basic","PLS M0","Tạo xung một scan ở cạnh lên."],
+["PLF","Basic","PLF M0","Tạo xung một scan ở cạnh xuống."],
+["INV","Basic","INV","Đảo trạng thái logic của kết quả."],
+["MC/MCR","Basic","MC N0 / MCR N0","Vùng điều khiển master."],
+["MPS/MRD/MPP","Basic","MPS / MRD / MPP","Xử lý nhánh logic."],
+["STL/RET","Basic","STL S0 / RET","Step ladder và kết thúc step."],
+["MOV","FNC","MOV K100 D0","Chuyển dữ liệu từ nguồn sang đích."],
+["BMOV","FNC","BMOV D0 D10 K5","Chuyển một khối dữ liệu."],
+["FMOV","FNC","FMOV K0 D0 K10","Ghi cùng một giá trị vào vùng dữ liệu."],
+["CMP","FNC","CMP D0 K100 M0","So sánh hai giá trị và xuất kết quả theo bit."],
+["ZCP","FNC","ZCP K0 D0 K100 M0","So sánh giá trị với một khoảng."],
+["ADD","FNC","ADD D0 D1 D2","Cộng dữ liệu."],
+["SUB","FNC","SUB D0 D1 D2","Trừ dữ liệu."],
+["MUL","FNC","MUL D0 D1 D2","Nhân dữ liệu."],
+["DIV","FNC","DIV D0 D1 D2","Chia dữ liệu."],
+["INC","FNC","INC D0","Tăng giá trị."],
+["DEC","FNC","DEC D0","Giảm giá trị."],
+["WAND/WOR/WXOR","FNC","WAND D0 D1 D2","Phép toán logic theo word."],
+["NEG","FNC","NEG D0","Đổi dấu dữ liệu."],
+["SFT/SFTR/SFTL","FNC","SFT M0 K8","Dịch bit/shift register."],
+["ROR/ROL","FNC","ROR D0 K1","Xoay bit."],
+["BCD/BIN","FNC","BCD D0 D1","Chuyển đổi BCD và binary."],
+["ENCO/DECO","FNC","ENCO D0 D1","Mã hóa/giải mã bit."],
+["SUM/MEAN","FNC","SUM D0 D10 D20","Tổng và giá trị trung bình."],
+["SPD","High speed","SPD X0 D0","Đo tốc độ xung."],
+["PLSY","High speed","PLSY K1000 K100 Y0","Phát xung."],
+["PWM","High speed","PWM K100 K50 Y0","Phát PWM."],
+["PLSR","Positioning","PLSR K1000 K500 Y0","Phát xung với tăng/giảm tốc tùy cấu hình."],
+["DSZR/ZRN","Positioning","ZRN ...","Các chức năng liên quan positioning."],
+["DRVI/DRVA","Positioning","DRVI ...","Điều khiển vị trí tương đối/tuyệt đối."],
+["PID","Advanced","PID ...","Điều khiển PID."],
+["TCMP/TZCP","RTC","TCMP ...","So sánh thời gian thực."],
+["STR/VAL/LEN","String","LEN ...","Xử lý chuỗi ký tự."]
+];
+
+const richExamples={
+"LD":{title:"LD — Load",syntax:"LD X0\nOUT Y0",explain:["LD X0: đọc trạng thái X0 như điều kiện đầu tiên của rung.","OUT Y0: xuất kết quả logic ra Y0.","Khi X0 ON → rung đúng → Y0 ON. Khi X0 OFF → Y0 OFF."],result:"X0 = ON ⇒ Y0 = ON",use:"Điều khiển một output trực tiếp từ một input."},
+"LDI":{title:"LDI — Load Inverse",syntax:"LDI X0\nOUT Y0",explain:["LDI X0: lấy điều kiện đảo của X0.","Nếu X0 OFF thì điều kiện đúng.","OUT Y0: đưa kết quả ra Y0."],result:"X0 = OFF ⇒ Y0 = ON",use:"Dùng khi muốn output hoạt động khi cảm biến/nút ở trạng thái OFF."},
+"AND":{title:"AND",syntax:"LD X0\nAND X1\nOUT Y0",explain:["LD X0: bắt đầu điều kiện với X0.","AND X1: nối X1 theo phép AND.","OUT Y0: Y0 chỉ ON khi toàn bộ rung đúng."],result:"X0 AND X1 ⇒ Y0",use:"Hai hoặc nhiều điều kiện phải đồng thời đúng."},
+"ANI":{title:"ANI — AND Inverse",syntax:"LD X0\nANI X1\nOUT Y0",explain:["X0 phải ON.","ANI X1 yêu cầu X1 OFF.","Y0 chỉ ON khi X0 ON và X1 OFF."],result:"X0 AND NOT X1 ⇒ Y0",use:"Liên động hoặc điều kiện cấm."},
+"OR":{title:"OR",syntax:"LD X0\nOR X1\nOUT Y0",explain:["LD X0: nhánh thứ nhất.","OR X1: thêm điều kiện song song về logic.","Chỉ cần một điều kiện ON là kết quả đúng."],result:"X0 OR X1 ⇒ Y0",use:"Hai nút có thể cùng điều khiển một output."},
+"ORI":{title:"ORI — OR Inverse",syntax:"LD X0\nORI X1\nOUT Y0",explain:["Điều kiện X0 hoặc phủ định X1.","Nếu X0 ON hoặc X1 OFF thì rung đúng."],result:"X0 OR NOT X1 ⇒ Y0",use:"Các điều kiện OR có tiếp điểm thường đóng."},
+"OUT":{title:"OUT — Output",syntax:"LD X0\nOUT Y0",explain:["OUT Y0 ghi kết quả logic hiện tại vào Y0.","OUT không phải lệnh giữ trạng thái kiểu SET; Y0 sẽ được cập nhật theo logic rung."],result:"Logic rung = 1 ⇒ Y0 ON",use:"Điều khiển output hoặc một device bit trong chương trình."},
+"SET":{title:"SET — Set giữ trạng thái",syntax:"LD X0\nSET M0\n\nLD X1\nRST M0\n\nLD M0\nOUT Y0",explain:["X0 ON → SET M0 làm M0 ON và giữ ON.","M0 không tự OFF khi X0 OFF.","X1 ON → RST M0 làm M0 OFF.","Y0 phản ánh trạng thái M0."],result:"Nhấn X0 → M0/Y0 giữ ON; nhấn X1 → OFF.",use:"Start/Stop, latch, trạng thái máy."},
+"RST":{title:"RST — Reset",syntax:"LD X1\nRST M0",explain:["Khi X1 ON, RST M0 đưa M0 về OFF.","RST cũng được dùng để reset counter hoặc timer loại phù hợp."],result:"X1 ON ⇒ M0 OFF",use:"Nút Stop, reset trạng thái, reset counter/timer."},
+"PLS":{title:"PLS — Pulse Rising",syntax:"LD X0\nPLS M0\n\nLD M0\nSET Y0",explain:["PLS phát một xung rất ngắn khi điều kiện X0 chuyển OFF → ON.","M0 chỉ ON trong một scan theo cơ chế xung.","Có thể dùng xung này để kích hoạt một hành động đúng một lần."],result:"Mỗi lần nhấn X0 → M0 có một xung.",use:"One-shot, đếm một lần, chuyển step."},
+"PLF":{title:"PLF — Pulse Falling",syntax:"LD X0\nPLF M0",explain:["PLF tạo xung khi X0 chuyển ON → OFF.","Khác PLS ở cạnh tác động."],result:"Nhả X0 → M0 có một xung.",use:"Phát hiện sự kiện khi nhả nút hoặc tín hiệu mất."},
+"INV":{title:"INV — Invert",syntax:"LD X0\nINV\nOUT Y0",explain:["INV đảo kết quả logic trước đó.","Nếu kết quả trước INV là 1 thì sau INV là 0 và ngược lại."],result:"Y0 = NOT X0",use:"Đảo logic mà không cần đổi kiểu tiếp điểm."},
+"MOV":{title:"MOV — Move",syntax:"MOV K100 D0\nMOV D0 D10",explain:["MOV K100 D0: ghi hằng số 100 vào D0.","MOV D0 D10: sao chép giá trị hiện tại của D0 sang D10.","MOV không phải phép cộng; nó truyền dữ liệu từ nguồn sang đích."],result:"D0 = 100 và D10 = 100",use:"Gán giá trị, copy dữ liệu, khởi tạo thanh ghi."},
+"BMOV":{title:"BMOV — Block Move",syntax:"BMOV D0 D10 K5",explain:["Nguồn bắt đầu tại D0.","Đích bắt đầu tại D10.","K5 chỉ định số lượng word được chuyển theo cú pháp của instruction."],result:"Một vùng dữ liệu D0... được sao chép sang D10...",use:"Copy bảng dữ liệu hoặc nhiều thanh ghi."},
+"FMOV":{title:"FMOV — Fill Move",syntax:"FMOV K0 D0 K10",explain:["K0 là giá trị muốn ghi.","D0 là vị trí bắt đầu.","K10 là số lượng word cần ghi theo cú pháp instruction."],result:"Một vùng D được điền cùng giá trị 0.",use:"Xóa/khởi tạo một vùng dữ liệu."},
+"CMP":{title:"CMP — Compare",syntax:"CMP D0 K100 M0",explain:["So sánh giá trị D0 với K100.","Các bit kết quả liên quan được điều khiển bắt đầu từ M0.","Tùy quan hệ >, =, < mà các bit kết quả tương ứng ON."],result:"D0 được so sánh với 100.",use:"Điều khiển theo giá trị đo, tốc độ, số lượng."},
+"ZCP":{title:"ZCP — Zone Compare",syntax:"ZCP K0 D0 K100 M0",explain:["So sánh D0 với vùng từ 0 đến 100.","Kết quả được đưa ra vùng bit bắt đầu tại M0.","Rất hữu ích để chia giá trị thành các vùng thấp/trong vùng/cao."],result:"Biết D0 đang thấp hơn, nằm trong hoặc cao hơn vùng.",use:"Phân loại nhiệt độ, tốc độ, mức, sản lượng."},
+"ADD":{title:"ADD — Addition",syntax:"ADD D0 D1 D2",explain:["Lấy D0 + D1.","Kết quả ghi vào D2."],result:"Nếu D0=100, D1=25 → D2=125.",use:"Cộng sản lượng, offset, giá trị cảm biến."},
+"SUB":{title:"SUB — Subtraction",syntax:"SUB D0 D1 D2",explain:["Lấy D0 - D1.","Kết quả ghi vào D2."],result:"Nếu D0=100, D1=25 → D2=75.",use:"Tính chênh lệch, số lượng còn lại."},
+"MUL":{title:"MUL — Multiplication",syntax:"MUL D0 D1 D2",explain:["Nhân D0 với D1.","Kết quả được lưu theo quy tắc độ rộng dữ liệu của instruction/model."],result:"D0=10, D1=20 → kết quả 200.",use:"Tính đơn giá × số lượng, hệ số."},
+"DIV":{title:"DIV — Division",syntax:"DIV D0 D1 D2",explain:["Chia D0 cho D1.","Cần chú ý trường hợp mẫu số bằng 0 và độ rộng dữ liệu."],result:"D0=100, D1=4 → kết quả 25.",use:"Tính trung bình, tốc độ, tỷ lệ."},
+"INC":{title:"INC — Increment",syntax:"INC D0",explain:["Mỗi lần instruction được thực thi, giá trị D0 tăng theo đơn vị của instruction.","Nếu rung giữ ON liên tục, cần hiểu cơ chế thực thi/scan để tránh tăng ngoài ý muốn."],result:"D0 tăng từng bước.",use:"Đếm phần mềm, tạo index."},
+"DEC":{title:"DEC — Decrement",syntax:"DEC D0",explain:["Giảm giá trị D0 theo đơn vị của instruction.","Cần kiểm soát điều kiện kích hoạt để tránh giảm liên tục mỗi scan."],result:"D0 giảm từng bước.",use:"Đếm ngược, số lượng còn lại."},
+"BCD":{title:"BCD — Binary to BCD",syntax:"BCD D0 D10",explain:["Chuyển giá trị nguồn sang dạng BCD theo quy tắc instruction.","Thường dùng khi đưa số sang thiết bị hiển thị cần BCD."],result:"D10 chứa dạng BCD tương ứng.",use:"Seven-segment/thiết bị hiển thị."},
+"BIN":{title:"BIN — BCD to Binary",syntax:"BIN D0 D10",explain:["Chuyển dữ liệu BCD về dạng binary để PLC xử lý số học."],result:"D10 chứa giá trị binary.",use:"Đưa dữ liệu hiển thị về dạng số để tính toán."},
+"SFT":{title:"SFT — Shift Register",syntax:"LD X0\nSFT M0 K8",explain:["SFT dịch dữ liệu bit theo cấu hình.","Dùng để tạo chuỗi trạng thái hoặc LED chạy."],result:"Các bit trong vùng M được dịch theo mỗi lần kích.",use:"Tracking sản phẩm, LED chạy, shift register."},
+"SPD":{title:"SPD — Speed Detection",syntax:"SPD X0 D0 K100",explain:["Đo tần số/tốc độ xung từ input theo cấu hình.","Kết quả được đưa vào vùng dữ liệu phù hợp."],result:"Dữ liệu tốc độ được PLC cập nhật.",use:"Đo tốc độ encoder/băng tải."},
+"PLSY":{title:"PLSY — Pulse Output",syntax:"PLSY K1000 K100 Y0",explain:["Tạo chuỗi xung tại output transistor phù hợp.","Tham số quy định tần số/số xung theo cú pháp và model.","Phải kiểm tra giới hạn output và phần cứng trước khi dùng cho servo/stepper."],result:"Y0 phát xung theo tham số.",use:"Điều khiển stepper/servo."},
+"PWM":{title:"PWM — Pulse Width Modulation",syntax:"PWM K100 K50 Y0",explain:["Tạo tín hiệu PWM.","Các tham số xác định chu kỳ và độ rộng xung theo instruction."],result:"Y0 phát PWM.",use:"Điều khiển công suất hoặc tín hiệu cần duty cycle."},
+"PLSR":{title:"PLSR — Pulse with Accel/Decel",syntax:"PLSR ... Y0",explain:["Dùng cho phát xung có đặc tính tăng/giảm tốc theo tham số.","Cú pháp và giới hạn phụ thuộc dòng PLC/output."],result:"Phát xung phục vụ positioning.",use:"Stepper/servo positioning."},
+"DRVI/DRVA":{title:"DRVI / DRVA — Positioning",syntax:"DRVI ...\nDRVA ...",explain:["DRVI thường dùng cho di chuyển tương đối; DRVA cho vị trí tuyệt đối theo cách Mitsubishi định nghĩa.","Cần cấu hình đúng output pulse, đơn vị, tốc độ và giới hạn."],result:"PLC phát lệnh chuyển động.",use:"Điều khiển trục servo/stepper."},
+"PID":{title:"PID — PID Control",syntax:"PID ...",explain:["Dùng thuật toán PID để điều khiển biến quá trình.","Cần xác định PV, SV, MV và tham số P/I/D phù hợp."],result:"PLC tính tín hiệu điều khiển theo sai lệch.",use:"Nhiệt độ, áp suất, lưu lượng, mức."}
+};
+
+const extraExamples={
+"ANB":{syntax:"LD X0\nOR X1\nANB\nLD X2\nOUT Y0",explain:["ANB nối hai khối logic bằng AND.","Khối trước ANB được kết hợp với khối sau.","Cần chú ý cách tạo nhánh trong Ladder để tránh hiểu nhầm thứ tự logic."],result:"(X0 OR X1) AND X2 ⇒ Y0",use:"Ghép các nhóm điều kiện."},
+"ORB":{syntax:"LD X0\nAND X1\nORB\nLD X2\nOUT Y0",explain:["ORB nối hai khối logic bằng OR.","Khối logic được xây dựng trước ORB được ghép với khối tiếp theo."],result:"(X0 AND X1) OR X2 ⇒ Y0",use:"Ghép nhóm điều kiện phức tạp."},
+"MC/MCR":{syntax:"LD X0\nMC N0\nLD X1\nOUT Y0\nMCR N0",explain:["MC mở vùng master control khi điều kiện điều khiển đúng.","Các rung trong vùng chịu ảnh hưởng của MC.","MCR kết thúc vùng."],result:"X0 điều khiển việc cho phép vùng logic hoạt động.",use:"Bật/tắt một nhóm điều khiển."},
+"MPS/MRD/MPP":{syntax:"LD X0\nMPS\nAND X1\nOUT Y0\nMPP\nAND X2\nOUT Y1",explain:["MPS lưu trạng thái logic tại điểm phân nhánh.","MRD đọc trạng thái đã lưu.","MPP lấy trạng thái khỏi stack/điểm lưu theo cơ chế instruction."],result:"Cho phép xử lý nhiều nhánh từ cùng một điều kiện.",use:"Các mạch nhánh Ladder."},
+"STL/RET":{syntax:"STL S0\nLD X0\nSET S1\nRET",explain:["STL S0 kích hoạt step S0.","Logic bên trong step chỉ xử lý khi step hoạt động.","SET S1 chuyển sang step tiếp theo.","RET kết thúc vùng STL."],result:"S0 → S1 theo điều kiện X0.",use:"Sequence máy, state machine."},
+"WAND/WOR/WXOR":{syntax:"WAND D0 D1 D2",explain:["Thực hiện phép AND theo bit giữa hai word.","Kết quả ghi vào D2."],result:"D2 = D0 AND D1 theo bit.",use:"Mask bit, xử lý trạng thái word."},
+"NEG":{syntax:"NEG D0",explain:["NEG đổi dấu giá trị số theo kiểu dữ liệu của instruction.","Cần chú ý miền giá trị và độ rộng dữ liệu."],result:"Giá trị dương thành âm hoặc ngược lại theo quy tắc số học.",use:"Đổi chiều giá trị, xử lý offset."},
+"ROR/ROL":{syntax:"ROR D0 K1",explain:["ROR xoay các bit sang phải.","Bit bị đẩy ra được quay trở lại đầu word theo cơ chế instruction."],result:"Bit pattern của D0 được xoay một vị trí.",use:"Mã hóa/giải mã bit, vòng bit."},
+"ENCO/DECO":{syntax:"ENCO D0 D10",explain:["ENCO mã hóa vị trí bit theo quy tắc instruction.","DECO thực hiện chiều ngược lại để giải mã giá trị thành bit."],result:"Chuyển đổi giữa vị trí bit và dữ liệu mã hóa.",use:"Chọn kênh, chọn output, decoder."},
+"SUM/MEAN":{syntax:"SUM D0 D9 D20",explain:["SUM tính tổng vùng dữ liệu theo cú pháp instruction.","MEAN tính giá trị trung bình của vùng dữ liệu."],result:"Dữ liệu thống kê được đưa vào vùng đích.",use:"Tính tổng sản lượng, trung bình cảm biến."},
+"TCMP/TZCP":{syntax:"TCMP ...\nTZCP ...",explain:["TCMP so sánh thời gian thực với giá trị đặt.","TZCP kiểm tra thời gian nằm trong vùng."],result:"Bit kết quả cho biết quan hệ thời gian.",use:"Lịch chạy máy, ca sản xuất."},
+"STR/VAL/LEN":{syntax:"LEN ...",explain:["LEN lấy độ dài chuỗi theo cú pháp instruction.","STR/VAL hỗ trợ chuyển đổi dữ liệu và chuỗi theo nhóm lệnh."],result:"PLC có thể xử lý dữ liệu ký tự.",use:"Barcode, mã sản phẩm, giao tiếp thiết bị."}
+};
+for(const [k,v] of Object.entries(extraExamples)) if(!richExamples[k]) richExamples[k]={title:k+" — Applied",...v,result:v.result,use:v.use};
+
+const lessonData={"LD": [["Ví dụ 1 — Input điều khiển Output", "LD X0\nOUT Y0", "X0 ON thì Y0 ON; X0 OFF thì Y0 OFF."], ["Ví dụ 2 — Điều kiện phủ định", "LDI X0\nOUT Y0", "X0 OFF thì Y0 ON."]], "AND": [["Ví dụ — Hai nút đồng thời", "LD X0\nAND X1\nOUT Y0", "Y0 chỉ ON khi X0 và X1 cùng ON."], ["Ví dụ — Start + điều kiện an toàn", "LD X0\nAND X2\nOUT Y0", "X0 là lệnh chạy và X2 là điều kiện cho phép."]], "OR": [["Ví dụ — Hai nút cùng điều khiển", "LD X0\nOR X1\nOUT Y0", "Chỉ cần X0 hoặc X1 ON thì Y0 ON."]], "SET": [["Ví dụ — Start/Stop", "LD X0\nSET M0\nLD X1\nRST M0\nLD M0\nOUT Y0", "Nhấn Start X0 → M0 giữ ON; nhấn Stop X1 → M0 OFF."], ["Ví dụ — Giữ trạng thái máy", "LD X0\nSET S0", "X0 kích hoạt trạng thái S0; trạng thái được duy trì cho đến khi chuyển/reset."]], "RST": [["Ví dụ — Reset Counter", "LD X1\nRST C0", "X1 ON → reset C0 theo chức năng reset của counter."]], "PLS": [["Ví dụ — One-shot", "LD X0\nPLS M0", "M0 tạo xung một scan khi X0 chuyển OFF→ON."], ["Ví dụ — Đếm mỗi lần nhấn", "LD X0\nPLS M0\nLD M0\nOUT C0 K10", "Dùng xung một scan để tránh tác động liên tục khi nút giữ ON."]], "MOV": [["Ví dụ 1 — Gán hằng số", "MOV K100 D0", "D0 nhận giá trị 100."], ["Ví dụ 2 — Sao chép dữ liệu", "MOV D0 D10", "D10 nhận giá trị hiện tại của D0."], ["Ví dụ 3 — Gán khi có điều kiện", "LD X0\nMOV K500 D0", "Khi X0 ON, D0 được ghi 500."]], "CMP": [["Ví dụ — So sánh giá trị", "CMP D0 K100 M0", "D0 được so sánh với 100; các bit kết quả bắt đầu tại M0 theo quy tắc CMP."], ["Ứng dụng — Điều khiển theo nhiệt độ", "CMP D10 K80 M20", "D10 chứa nhiệt độ; dùng các bit kết quả để quyết định quạt/cảnh báo."]], "ZCP": [["Ví dụ — Chia vùng", "ZCP K0 D0 K100 M0", "D0 được kiểm tra theo vùng 0–100; kết quả nằm ở nhóm bit bắt đầu M0."]], "ADD": [["Ví dụ — Tổng sản lượng", "ADD D0 D1 D2", "D2 = D0 + D1."], ["Ví dụ — Cộng offset", "LD X0\nADD D0 K10 D0", "Khi X0 ON, tăng D0 thêm 10; cần thiết kế điều kiện xung nếu chỉ muốn tăng một lần."]], "SUB": [["Ví dụ — Số lượng còn lại", "SUB D0 D1 D2", "D2 = D0 - D1."]], "MUL": [["Ví dụ — Thành tiền", "MUL D0 D1 D2", "D2 nhận kết quả nhân theo kiểu dữ liệu của instruction."]], "DIV": [["Ví dụ — Tỷ lệ", "DIV D0 D1 D2", "D2 nhận thương theo kiểu dữ liệu; phải kiểm tra trường hợp D1=0."]], "SFT": [["Ví dụ — LED chạy", "LD X0\nSFT M0 K8", "Khi kích theo cơ chế phù hợp, bit được dịch trong vùng M; ứng dụng LED/sequence."]], "PLSY": [["Ví dụ — Phát xung", "PLSY K1000 K100 Y0", "Y0 phát xung theo tham số; cần kiểm tra output transistor và giới hạn model."]], "DRVI": [["Ví dụ — Di chuyển tương đối", "DRVI ...", "Dùng khi cần điều khiển chuyển động theo lượng dịch chuyển tương đối."]], "DRVA": [["Ví dụ — Vị trí tuyệt đối", "DRVA ...", "Dùng khi cần đưa trục đến vị trí tuyệt đối theo cấu hình positioning."]], "PID": [["Ví dụ — Điều khiển nhiệt độ", "PID ...", "PV là nhiệt độ đo, SV là nhiệt độ đặt, MV là tín hiệu điều khiển; cần tune tham số."]]};
+const verifiedSyntax={"CMP":["CMP D0 K100 M0","D0 và K100 được so sánh; M0, M1, M2 lần lượt nhận trạng thái >, =, < theo CMP.","D0=120 → M0 ON; D0=100 → M1 ON; D0=80 → M2 ON."],"ZCP":["ZCP K0 K100 D0 M0","K0 là cận dưới, K100 là cận trên, D0 là giá trị so sánh; M0/M1/M2 biểu diễn thấp/trong vùng/cao.","D0=50 → M1 ON; D0<0 → M0 ON; D0>100 → M2 ON."],"MOV":["MOV K100 D0","K100 là source; D0 là destination. Khi rung được thực thi, D0 nhận 100.","D0 = 100."],"BMOV":["BMOV D0 D10 K5","Copy 5 word bắt đầu từ D0 sang vùng bắt đầu D10.","D0..D4 → D10..D14."],"FMOV":["FMOV K0 D0 K10","Ghi cùng giá trị K0 vào 10 word bắt đầu tại D0.","D0..D9 = 0."],"XCH":["XCH D0 D10","Trao đổi nội dung D0 và D10. XCH chỉ hỗ trợ ở các dòng PLC phù hợp.","D0 và D10 đổi giá trị cho nhau."],"BCD":["BCD D0 D10","Chuyển giá trị binary nguồn sang BCD tại destination.","D10 chứa dữ liệu BCD tương ứng."],"BIN":["BIN D0 D10","Chuyển dữ liệu BCD nguồn về binary tại destination.","D10 chứa binary tương ứng."],"ADD":["ADD D0 D1 D2","D2 = D0 + D1 trong phép toán 16-bit; instruction có biến thể 32-bit DADD.","D0=100, D1=25 → D2=125."],"SUB":["SUB D0 D1 D2","D2 = D0 - D1; có biến thể 32-bit DSUB.","D0=100, D1=25 → D2=75."],"MUL":["MUL D0 D1 D2","16-bit MUL cho kết quả 32-bit tại D2,D3; biến thể 32-bit là DMUL.","D0=10, D1=20 → D2/D3 chứa 200 theo định dạng 32-bit."],"DIV":["DIV D0 D1 D2","16-bit DIV lưu quotient tại D2 và remainder tại D3; biến thể 32-bit là DDIV.","100 ÷ 4 → quotient 25, remainder 0."],"INC":["INC D0","Tăng D0 theo một đơn vị khi instruction thực thi.","D0=9 → 10."],"DEC":["DEC D0","Giảm D0 theo một đơn vị khi instruction thực thi.","D0=9 → 8."],"WAND":["WAND D0 D1 D2","AND từng bit của D0 và D1, kết quả vào D2.","D2 = D0 AND D1."],"WOR":["WOR D0 D1 D2","OR từng bit của D0 và D1, kết quả vào D2.","D2 = D0 OR D1."],"WXOR":["WXOR D0 D1 D2","XOR từng bit của D0 và D1, kết quả vào D2.","D2 = D0 XOR D1."],"NEG":["NEG D0","Đổi dấu dữ liệu theo quy tắc của instruction.","D0 dương → giá trị âm tương ứng."],"ROR":["ROR D0 K1","Xoay bit của D0 sang phải 1 bit; bit cuối được đưa vòng lại đầu.","Mẫu bit D0 được rotate phải."],"ROL":["ROL D0 K1","Xoay bit của D0 sang trái 1 bit.","Mẫu bit D0 được rotate trái."],"SFTR":["SFTR M0 M10 K8 K1","S là bit nguồn đầu, D là đầu vùng shift, K8 là độ dài vùng, K1 là số bit dịch.","Dữ liệu bit được dịch phải theo cấu hình."],"SFTL":["SFTL M0 S0 K8 K1","S là bit nguồn, D là đầu vùng shift, K8 là độ dài vùng, K1 là số bit dịch.","Dữ liệu bit được dịch trái theo cấu hình."],"SUM":["SUM D0 D10","Đếm số bit ON trong D0 và ghi số lượng vào D10.","Nếu D0 có 9 bit ON → D10=9."],"PLSY":["PLSY K1000 K200 Y0","S1=1000 Hz, S2=200 pulses, D=Y0. Manual quy định output phải là output transistor/high-speed phù hợp.","Y0 phát 200 xung ở 1000 Hz."],"PWM":["PWM K50 K100 Y0","S1=50 ms là pulse width, S2=100 ms là period, D=Y0; cần S1≤S2 và output phù hợp.","Y0 phát PWM 50 ms ON trong chu kỳ 100 ms."],"PLSR":["PLSR K1000 K2000 K500 Y0","S1=maximum frequency, S2=total pulses, S3=acc/dec time, D=output Y.","Y0 phát 2000 xung, có tăng/giảm tốc theo tham số."],"SPD":["SPD X0 K100 D0","S1=X0 là input xung; S2=thời gian đo; D0 là vùng kết quả.","PLC đo mật độ/tốc độ xung trong khoảng thời gian chỉ định."],"DRVI":["DRVI K1000 K500 Y0 M0","S1=số xung tương đối, S2=tần số xung, D1=output pulse, D2=output hướng.","Trục chạy tương đối theo số xung và tốc độ."],"DRVA":["DRVA K10000 K500 Y0 M0","S1=vị trí tuyệt đối, S2=tần số xung, D1=output pulse, D2=output hướng.","Trục chạy đến vị trí tuyệt đối theo cấu hình."],"PID":["PID D0 D100 D200 D300","S1=D0 chứa SV, S2=D100 chứa PV, S3=D200 là vùng parameter, D300 chứa MV.","PLC tính MV theo PID tại chu kỳ sampling."],"ALT":["ALT Y0","ALT đảo trạng thái bit đích. Khi dùng ALT liên tục, đích có thể đảo mỗi operation cycle; để đảo theo cạnh dùng ALTP hoặc tiếp điểm pulse.","Mỗi lần kích hoạt đúng cạnh → Y0 đổi ON/OFF."]};
+const manualCatalog=[["FNC00","CJ","Program Flow","Nhảy có điều kiện"],["FNC01","CALL","Program Flow","Gọi chương trình con"],["FNC02","SRET","Program Flow","Kết thúc chương trình con"],["FNC03","IRET","Program Flow","Kết thúc routine ngắt"],["FNC04","EI","Program Flow","Cho phép ngắt"],["FNC05","DI","Program Flow","Cấm ngắt"],["FNC06","FEND","Program Flow","Kết thúc chương trình chính"],["FNC07","WDT","Program Flow","Làm mới watchdog timer"],["FNC08","FOR","Program Flow","Bắt đầu vòng lặp FOR/NEXT"],["FNC09","NEXT","Program Flow","Kết thúc vòng lặp FOR/NEXT"],["FNC10","CMP","Move & Compare","So sánh hai giá trị"],["FNC11","ZCP","Move & Compare","So sánh theo vùng"],["FNC12","MOV","Move & Compare","Di chuyển dữ liệu"],["FNC13","SMOV","Move & Compare","Dịch chuyển dữ liệu theo digit"],["FNC14","CML","Move & Compare","Đảo/complement dữ liệu"],["FNC15","BMOV","Move & Compare","Sao chép một khối dữ liệu"],["FNC16","FMOV","Move & Compare","Ghi cùng giá trị vào nhiều word"],["FNC17","XCH","Move & Compare","Trao đổi hai dữ liệu"],["FNC18","BCD","Move & Compare","Đổi sang BCD"],["FNC19","BIN","Move & Compare","Đổi sang binary"],["FNC20","ADD","Arithmetic & Logic","Cộng"],["FNC21","SUB","Arithmetic & Logic","Trừ"],["FNC22","MUL","Arithmetic & Logic","Nhân"],["FNC23","DIV","Arithmetic & Logic","Chia"],["FNC24","INC","Arithmetic & Logic","Tăng giá trị"],["FNC25","DEC","Arithmetic & Logic","Giảm giá trị"],["FNC26","WAND","Arithmetic & Logic","AND theo word"],["FNC27","WOR","Arithmetic & Logic","OR theo word"],["FNC28","WXOR","Arithmetic & Logic","XOR theo word"],["FNC29","NEG","Arithmetic & Logic","Đổi dấu"],["FNC30","ROR","Rotation & Shift","Xoay phải"],["FNC31","ROL","Rotation & Shift","Xoay trái"],["FNC32","RCR","Rotation & Shift","Xoay phải có carry"],["FNC33","RCL","Rotation & Shift","Xoay trái có carry"],["FNC34","SFTR","Rotation & Shift","Dịch bit phải"],["FNC35","SFTL","Rotation & Shift","Dịch bit trái"],["FNC36","WSFR","Rotation & Shift","Dịch word phải"],["FNC37","WSFL","Rotation & Shift","Dịch word trái"],["FNC38","SFWR","Rotation & Shift","Ghi dữ liệu FIFO/FILO"],["FNC39","SFRD","Rotation & Shift","Đọc dữ liệu FIFO"],["FNC40","ZRST","Data Operation","Reset một vùng device"],["FNC41","DECO","Data Operation","Decode"],["FNC42","ENCO","Data Operation","Encode"],["FNC43","SUM","Data Operation","Đếm số bit ON"],["FNC44","BON","Data Operation","Kiểm tra trạng thái bit"],["FNC45","MEAN","Data Operation","Tính giá trị trung bình"],["FNC46","ANS","Data Operation","Timed annunciator set"],["FNC47","ANR","Data Operation","Reset annunciator"],["FNC48","SQR","Data Operation","Căn bậc hai"],["FNC49","FLT","Data Operation","Đổi integer sang floating point"],["FNC50","REF","High-Speed Processing","Refresh I/O"],["FNC51","REFF","High-Speed Processing","Refresh và điều chỉnh filter"],["FNC52","MTR","High-Speed Processing","Input matrix"],["FNC53","HSCS","High-Speed Processing","High-speed counter set"],["FNC54","HSCR","High-Speed Processing","High-speed counter reset"],["FNC55","HSZ","High-Speed Processing","High-speed counter zone compare"],["FNC56","SPD","High-Speed Processing","Đo tốc độ xung"],["FNC57","PLSY","High-Speed Processing","Phát xung Y"],["FNC58","PWM","High-Speed Processing","Phát PWM"],["FNC59","PLSR","High-Speed Processing","Phát xung có tăng/giảm tốc"],["FNC60","IST","Handy Instruction","Initial State"],["FNC61","SER","Handy Instruction","Tìm kiếm trong vùng dữ liệu"],["FNC62","ABSD","Handy Instruction","Absolute drum sequencer"],["FNC63","INCD","Handy Instruction","Incremental drum sequencer"],["FNC64","TTMR","Handy Instruction","Teaching timer"],["FNC65","STMR","Handy Instruction","Special timer"],["FNC66","ALT","Handy Instruction","Đảo trạng thái"],["FNC67","RAMP","Handy Instruction","Tạo giá trị ramp"],["FNC68","ROTC","Handy Instruction","Điều khiển rotary table"],["FNC69","SORT","Handy Instruction","Sắp xếp dữ liệu"],["FNC70","TKY","External FX I/O","Nhập bằng ten-key"],["FNC71","HKY","External FX I/O","Nhập hexadecimal"],["FNC72","DSW","External FX I/O","Digital switch/thumwheel input"],["FNC73","SEGD","External FX I/O","Giải mã seven-segment"],["FNC74","SEGL","External FX I/O","Seven-segment có latch"],["FNC75","ARWS","External FX I/O","Arrow switch"],["FNC76","ASC","External FX I/O","Nhập dữ liệu ASCII"],["FNC77","PR","External FX I/O","In ASCII"],["FNC78","FROM","External FX I/O","Đọc từ special function block"],["FNC79","TO","External FX I/O","Ghi vào special function block"],["FNC80","RS","External FX Device","Serial communication"],["FNC81","PRUN","External FX Device","Parallel run octal mode"],["FNC82","ASCI","External FX Device","Hexadecimal → ASCII"],["FNC83","HEX","External FX Device","ASCII → hexadecimal"],["FNC84","CCD","External FX Device","Tạo/check code"],["FNC85","VRRD","External FX Device","Đọc volume"],["FNC86","VRSC","External FX Device","Scale volume"],["FNC87","RS2","External FX Device","Serial communication 2"],["FNC88","PID","External FX Device","PID control loop"],["FNC102","ZPUSH","Data Transfer","Batch store index registers"],["FNC103","ZPOP","Data Transfer","Batch POP index registers"],["FNC110","ECMP","Floating Point","So sánh floating point"],["FNC111","EZCP","Floating Point","So sánh vùng floating point"],["FNC112","EMOV","Floating Point","Di chuyển floating point"],["FNC116","ESTR","Floating Point","Floating point → character string"],["FNC117","EVAL","Floating Point","Character string → floating point"],["FNC118","EBCD","Floating Point","Floating point → scientific notation"],["FNC119","EBIN","Floating Point","Scientific notation → floating point"],["FNC120","EADD","Floating Point","Cộng floating point"],["FNC121","ESUB","Floating Point","Trừ floating point"],["FNC122","EMUL","Floating Point","Nhân floating point"],["FNC123","EDIV","Floating Point","Chia floating point"],["FNC124","EXP","Floating Point","Hàm mũ floating point"],["FNC125","LOGE","Floating Point","Log tự nhiên floating point"],["FNC126","LOG10","Floating Point","Log cơ số 10 floating point"],["FNC127","ESQR","Floating Point","Căn bậc hai floating point"],["FNC128","ENEG","Floating Point","Đổi dấu floating point"],["FNC129","INT","Floating Point","Floating point → integer"],["FNC130","SIN","Floating Point","Sin floating point"],["FNC131","COS","Floating Point","Cos floating point"],["FNC132","TAN","Floating Point","Tan floating point"],["FNC133","ASIN","Floating Point","Arc sine floating point"],["FNC134","ACOS","Floating Point","Arc cosine floating point"],["FNC135","ATAN","Floating Point","Arc tangent floating point"],["FNC136","RAD","Floating Point","Độ → radian"],["FNC137","DEG","Floating Point","Radian → độ"],["FNC140","WSUM","Data Operation 2","Tổng word data"],["FNC141","WTOB","Data Operation 2","WORD → BYTE"],["FNC142","BTOW","Data Operation 2","BYTE → WORD"],["FNC143","UNI","Data Operation 2","Liên kết word theo 4-bit"],["FNC144","DIS","Data Operation 2","Nhóm word theo 4-bit"],["FNC147","SWAP","Data Operation 2","Đổi byte"],["FNC149","SORT2","Data Operation 2","Sắp xếp bảng dữ liệu 2"],["FNC150","DSZR","Positioning Control","DOG search zero return"],["FNC151","DVIT","Positioning Control","Interrupt positioning"],["FNC152","TBL","Positioning Control","Batch data positioning"],["FNC155","ABS","Positioning Control","Đọc giá trị tuyệt đối hiện tại"],["FNC156","ZRN","Positioning Control","Zero return"],["FNC157","PLSV","Positioning Control","Phát xung tốc độ biến đổi"],["FNC158","DRVI","Positioning Control","Drive to increment"],["FNC159","DRVA","Positioning Control","Drive to absolute"],["FNC160","TCMP","Real Time Clock","So sánh dữ liệu RTC"],["FNC161","TZCP","Real Time Clock","So sánh vùng RTC"],["FNC162","TADD","Real Time Clock","Cộng dữ liệu RTC"],["FNC163","TSUB","Real Time Clock","Trừ dữ liệu RTC"],["FNC164","HTOS","Real Time Clock","Giờ → giây"],["FNC165","STOH","Real Time Clock","Giây → giờ"],["FNC166","TRD","Real Time Clock","Đọc RTC"],["FNC167","TWR","Real Time Clock","Ghi RTC"],["FNC169","HOUR","Real Time Clock","Hour meter"],["FNC170","GRY","External Device","Decimal → Gray code"],["FNC171","GBIN","External Device","Gray code → decimal"],["FNC176","RD3A","External Device","Đọc dedicated analog block"],["FNC177","WR3A","External Device","Ghi dedicated analog block"],["FNC182","COMRD","Others","Đọc device comment data"],["FNC184","RND","Others","Tạo số ngẫu nhiên"],["FNC186","DUTY","Others","Tạo timing pulse"],["FNC188","CRC","Others","Cyclic redundancy check"],["FNC189","HCMOV","Others","High-speed counter move"],["FNC192","BK+","Block Data Operation","Cộng block data"],["FNC193","BK-","Block Data Operation","Trừ block data"],["FNC194","BKCMP=","Block Data Operation","So sánh block bằng"],["FNC195","BKCMP>","Block Data Operation","So sánh block lớn hơn"],["FNC196","BKCMP<","Block Data Operation","So sánh block nhỏ hơn"],["FNC197","BKCMP<>","Block Data Operation","So sánh block khác"],["FNC198","BKCMP<=","Block Data Operation","So sánh block nhỏ hơn/bằng"],["FNC199","BKCMP>=","Block Data Operation","So sánh block lớn hơn/bằng"],["FNC200","STR","Character String","BIN → character string"],["FNC201","VAL","Character String","Character string → BIN"],["FNC202","$+","Character String","Nối chuỗi"],["FNC203","LEN","Character String","Lấy độ dài chuỗi"],["FNC204","RIGHT","Character String","Lấy chuỗi từ bên phải"],["FNC205","LEFT","Character String","Lấy chuỗi từ bên trái"],["FNC206","MIDR","Character String","Lấy chuỗi tại vị trí"],["FNC207","MIDW","Character String","Thay thế chuỗi tại vị trí"],["FNC208","INSTR","Character String","Tìm chuỗi"],["FNC209","$MOV","Character String","Chuyển chuỗi"],["FNC210","FDEL","Data Operation 3","Xóa dữ liệu khỏi bảng"],["FNC211","FINS","Data Operation 3","Chèn dữ liệu vào bảng"],["FNC212","POP","Data Operation 3","Đọc dữ liệu cuối FILO"],["FNC213","SFR","Data Operation 3","Dịch 16-bit phải có carry"],["FNC214","SFL","Data Operation 3","Dịch 16-bit trái có carry"],["FNC224","LD=","Data Comparison","Load compare bằng"],["FNC225","LD>","Data Comparison","Load compare lớn hơn"],["FNC226","LD<","Data Comparison","Load compare nhỏ hơn"],["FNC228","LD<>","Data Comparison","Load compare khác"],["FNC229","LD<=","Data Comparison","Load compare nhỏ hơn/bằng"],["FNC230","LD>=","Data Comparison","Load compare lớn hơn/bằng"],["FNC232","AND=","Data Comparison","AND compare bằng"],["FNC233","AND>","Data Comparison","AND compare lớn hơn"],["FNC234","AND<","Data Comparison","AND compare nhỏ hơn"],["FNC236","AND<>","Data Comparison","AND compare khác"],["FNC237","AND<=","Data Comparison","AND compare nhỏ hơn/bằng"],["FNC238","AND>=","Data Comparison","AND compare lớn hơn/bằng"],["FNC240","OR=","Data Comparison","OR compare bằng"],["FNC241","OR>","Data Comparison","OR compare lớn hơn"],["FNC242","OR<","Data Comparison","OR compare nhỏ hơn"],["FNC244","OR<>","Data Comparison","OR compare khác"],["FNC245","OR<=","Data Comparison","OR compare nhỏ hơn/bằng"],["FNC246","OR>=","Data Comparison","OR compare lớn hơn/bằng"],["FNC256","LIMIT","Data Table Operation","Limit control"],["FNC257","BAND","Data Table Operation","Dead band control"],["FNC258","ZONE","Data Table Operation","Zone control"],["FNC259","SCL","Data Table Operation","Scaling"],["FNC260","DABIN","Data Table Operation","Decimal ASCII → BIN"],["FNC261","BINDA","Data Table Operation","BIN → Decimal ASCII"],["FNC269","SCL2","Data Table Operation","Scaling 2"],["FNC270","IVCK","External Device Communication","Kiểm tra trạng thái inverter"],["FNC271","IVDR","External Device Communication","Điều khiển inverter"],["FNC272","IVRD","External Device Communication","Đọc parameter inverter"],["FNC273","IVWR","External Device Communication","Ghi parameter inverter"],["FNC274","IVBWR","External Device Communication","Ghi block parameter inverter"],["FNC275","IVMC","External Device Communication","Multi command inverter"],["FNC276","ADPRW","External Device Communication","MODBUS read/write"],["FNC278","RBFM","Data Transfer 2","Divided BFM read"],["FNC279","WBFM","Data Transfer 2","Divided BFM write"],["FNC280","HSCT","High-Speed Processing 2","High-speed counter compare with data table"],["FNC290","LOADR","Extension File Register","Load from ER"],["FNC291","SAVER","Extension File Register","Save to ER"],["FNC292","INITR","Extension File Register","Initialize R và ER"],["FNC293","LOGR","Extension File Register","Logging R và ER"],["FNC294","RWER","Extension File Register","Rewrite to ER"],["FNC295","INITER","Extension File Register","Initialize ER"],["FNC300","FLCRT","FX3U-CF-ADP","Tạo/kiểm tra file"],["FNC301","FLDEL","FX3U-CF-ADP","Xóa file/format CF card"],["FNC302","FLWR","FX3U-CF-ADP","Ghi dữ liệu"],["FNC303","FLRD","FX3U-CF-ADP","Đọc dữ liệu"],["FNC304","FLCMD","FX3U-CF-ADP","Lệnh FX3U-CF-ADP"],["FNC305","FLSTRD","FX3U-CF-ADP","Đọc trạng thái FX3U-CF-ADP"]];const practices=[
+["B01","Beginner","X0 điều khiển Y0","Nhấn X0 thì Y0 ON, nhả X0 thì Y0 OFF.","LD X0\\nOUT Y0"],
+["B02","Beginner","AND hai nút","Y0 chỉ ON khi X0 và X1 cùng ON.","LD X0\\nAND X1\\nOUT Y0"],
+["B03","Beginner","OR hai nút","Một trong X0/X1 ON thì Y0 ON.","LD X0\\nOR X1\\nOUT Y0"],
+["B04","Beginner","Start/Stop tự giữ","X0 Start, X1 Stop, Y0 tự giữ.","LD X0\\nOR Y0\\nANI X1\\nOUT Y0"],
+["T01","Timer","Trễ bật 5 giây","X0 ON, sau thời gian đặt thì Y0 ON.","LD X0\\nOUT T0 K50\\nLD T0\\nOUT Y0"],
+["T02","Timer","Đèn sáng theo thời gian","Nhấn X0 tạo xung và timer giữ Y0 trong khoảng đặt.","LD X0\\nPLS M0\\nLD M0\\nOUT T0 K50\\nLD T0\\nOUT Y0"],
+["C01","Counter","Đếm 5 sản phẩm","Mỗi xung X0 tăng C0; đủ 5 thì C0 ON.","LD X0\\nOUT C0 K5"],
+["C02","Counter","Reset counter","X1 reset C0 về trạng thái ban đầu.","LD X1\\nRST C0"],
+["D01","Register","Gán dữ liệu","Ghi 100 vào D0.","MOV K100 D0"],
+["D02","Register","Cộng dữ liệu","D2 = D0 + D1.","ADD D0 D1 D2"],
+["D03","Register","So sánh","Bật M0/M1/M2 theo quan hệ của D0 và K100.","CMP D0 K100 M0"],
+["S01","Sequence","Step bằng S","Tách chương trình thành các trạng thái S0→S1→S2.","STL S0\\n...\\nSTL S1\\n...\\nRET"],
+["A01","Applied","Shift LED","Dùng shift để chạy lần lượt nhiều output.","SFT M0 K8"],
+["A02","Machine","Băng tải đếm sản phẩm","Sensor đếm sản phẩm, đủ số lượng thì dừng băng tải.","X0 → C0 → Y0"],
+["A03","Machine","Xi lanh tuần tự","Điều khiển van theo các bước và cảm biến hành trình.","S0 → Y0 → X1 → S1 → Y1"],
+["A04","Machine","Cửa tự động","Cảm biến mở, timer giữ cửa, sau đó đóng.","X0 → Y0 → T0 → Y1"],
+["A05","Advanced","Phát xung","Tạo xung điều khiển stepper/servo.","PLSY / PLSR"]
+];
+
+function nav(){
+document.getElementById("nav").innerHTML=sections.map(([id,n])=>`<button data-page="${id}">${n}</button>`).join("");
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>show(b.dataset.page));
+}
+function esc(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));}
+function layout(title,body){return `<div class="back" onclick="show('home')">← Trang chủ</div><h1>${title}</h1>${body}<footer>PLC Knowledge V14 — thư viện học tập cá nhân. Nội dung được tổ chức lại để học và tra cứu; khi dùng trong dự án thực tế hãy đối chiếu manual đúng model PLC.</footer>`}
+function cards(arr){return `<div class="grid">${arr.map(x=>`<div class="card" onclick="show('${x[0]}')"><h3>${x[1]}</h3><p>${x[2]||""}</p></div>`).join("")}</div>`}
+
+
+const sourceStructure=[{"id":"AND","kind":"Basic","fnc":"","mnemonic":"AND","name":"AND","function":"Serial connection of NO (normally open) contacts","syntax":"AND","page":1,"image":"assets/structure/basic_AND.jpg"},{"id":"ANDF","kind":"Basic","fnc":"","mnemonic":"ANDF","name":"AND Falling Pulse","function":"Serial connection of falling/trailing edge pulse","syntax":"ANDF","page":1,"image":"assets/structure/basic_ANDF.jpg"},{"id":"ANDP","kind":"Basic","fnc":"","mnemonic":"ANDP","name":"AND Pulse","function":"Serial connection of rising edge pulse","syntax":"ANDP","page":1,"image":"assets/structure/basic_ANDP.jpg"},{"id":"ANI","kind":"Basic","fnc":"","mnemonic":"ANI","name":"AND Inverse","function":"Serial connection of NC (normally closed) contacts","syntax":"ANI","page":1,"image":"assets/structure/basic_ANI.jpg"},{"id":"LD","kind":"Basic","fnc":"","mnemonic":"LD","name":"Load","function":"Initial logical operation contact type NO (normally open)","syntax":"LD","page":1,"image":"assets/structure/basic_LD.jpg"},{"id":"LDF","kind":"Basic","fnc":"","mnemonic":"LDF","name":"Load Falling Pulse","function":"Initial logical operation of falling/trailing edge pulse","syntax":"LDF","page":1,"image":"assets/structure/basic_LDF.jpg"},{"id":"LDI","kind":"Basic","fnc":"","mnemonic":"LDI","name":"Load Inverse","function":"Initial logical operation contact type NC (normally closed)","syntax":"LDI","page":1,"image":"assets/structure/basic_LDI.jpg"},{"id":"LDP","kind":"Basic","fnc":"","mnemonic":"LDP","name":"Load Pulse","function":"Initial logical operation of rising edge pulse","syntax":"LDP","page":1,"image":"assets/structure/basic_LDP.jpg"},{"id":"OR","kind":"Basic","fnc":"","mnemonic":"OR","name":"OR","function":"Parallel connection of NO (normally open) contacts","syntax":"OR","page":1,"image":"assets/structure/basic_OR.jpg"},{"id":"ORF","kind":"Basic","fnc":"","mnemonic":"ORF","name":"OR Falling Pulse","function":"Parallel connection of falling/trailing edge pulse","syntax":"ORF","page":1,"image":"assets/structure/basic_ORF.jpg"},{"id":"ORI","kind":"Basic","fnc":"","mnemonic":"ORI","name":"OR Inverse","function":"Parallel connection of NC (normally closed) contacts","syntax":"ORI","page":1,"image":"assets/structure/basic_ORI.jpg"},{"id":"ORP","kind":"Basic","fnc":"","mnemonic":"ORP","name":"OR Pulse","function":"Parallel connection of rising edge pulse","syntax":"ORP","page":1,"image":"assets/structure/basic_ORP.jpg"},{"id":"ANB","kind":"Basic","fnc":"","mnemonic":"ANB","name":"AND Block","function":"Serial connection of multiple parallel circuits","syntax":"ANB","page":2,"image":"assets/structure/basic_ANB.jpg"},{"id":"END","kind":"Basic","fnc":"","mnemonic":"END","name":"END","function":"Program END, I/O refresh and Return to Step 0","syntax":"END","page":2,"image":"assets/structure/basic_END.jpg"},{"id":"INV","kind":"Basic","fnc":"","mnemonic":"INV","name":"Inverse","function":"Invert the current result of the internal PLC operations","syntax":"INV","page":2,"image":"assets/structure/basic_INV.jpg"},{"id":"MC","kind":"Basic","fnc":"","mnemonic":"MC","name":"Master Control","function":"Denotes the start of a master control block","syntax":"MC","page":2,"image":"assets/structure/basic_MC.jpg"},{"id":"MCR","kind":"Basic","fnc":"","mnemonic":"MCR","name":"Master Control Reset","function":"Denotes the end of a master control block","syntax":"MCR","page":2,"image":"assets/structure/basic_MCR.jpg"},{"id":"MEF","kind":"Basic","fnc":"","mnemonic":"MEF","name":"MEF","function":"Conversion of operation result to trailing edge pulse","syntax":"MEF","page":2,"image":"assets/structure/basic_MEF.jpg"},{"id":"MEP","kind":"Basic","fnc":"","mnemonic":"MEP","name":"MEP","function":"Conversion of operation result to leading edge pulse","syntax":"MEP","page":2,"image":"assets/structure/basic_MEP.jpg"},{"id":"MPP","kind":"Basic","fnc":"","mnemonic":"MPP","name":"Memory POP","function":"Pops (recalls and removes) the currently stored result","syntax":"MPP","page":2,"image":"assets/structure/basic_MPP.jpg"},{"id":"MPS","kind":"Basic","fnc":"","mnemonic":"MPS","name":"Memory Point Store","function":"Stores the current result of the internal PLC operations","syntax":"MPS","page":2,"image":"assets/structure/basic_MPS.jpg"},{"id":"MRD","kind":"Basic","fnc":"","mnemonic":"MRD","name":"Memory Read","function":"Reads the current result of the internal PLC operations","syntax":"MRD","page":2,"image":"assets/structure/basic_MRD.jpg"},{"id":"NOP","kind":"Basic","fnc":"","mnemonic":"NOP","name":"No Operation","function":"No operation or null step","syntax":"NOP","page":2,"image":"assets/structure/basic_NOP.jpg"},{"id":"ORB","kind":"Basic","fnc":"","mnemonic":"ORB","name":"OR Block","function":"Parallel connection of multiple contact circuits","syntax":"ORB","page":2,"image":"assets/structure/basic_ORB.jpg"},{"id":"OUT","kind":"Basic","fnc":"","mnemonic":"OUT","name":"OUT","function":"Final logical operation type coil drive","syntax":"OUT","page":2,"image":"assets/structure/basic_OUT.jpg"},{"id":"PLF","kind":"Basic","fnc":"","mnemonic":"PLF","name":"Pulse Falling","function":"Falling/trailing edge pulse","syntax":"PLF","page":2,"image":"assets/structure/basic_PLF.jpg"},{"id":"PLS","kind":"Basic","fnc":"","mnemonic":"PLS","name":"Pulse","function":"Rising edge pulse","syntax":"PLS","page":2,"image":"assets/structure/basic_PLS.jpg"},{"id":"RST","kind":"Basic","fnc":"","mnemonic":"RST","name":"Reset","function":"RESET bit device OFF","syntax":"RST","page":2,"image":"assets/structure/basic_RST.jpg"},{"id":"SET","kind":"Basic","fnc":"","mnemonic":"SET","name":"SET","function":"SET bit device latch ON","syntax":"SET","page":2,"image":"assets/structure/basic_SET.jpg"},{"id":"RET","kind":"Step Ladder","fnc":"","mnemonic":"RET","name":"Return","function":"Completes step ladder","syntax":"RET","page":3,"image":"assets/structure/step_RET.jpg"},{"id":"STL","kind":"Step Ladder","fnc":"","mnemonic":"STL","name":"Step Ladder","function":"Starts step ladder","syntax":"STL","page":3,"image":"assets/structure/step_STL.jpg"},{"id":"FNC00","kind":"Applied / FNC","fnc":"FNC00","mnemonic":"CJ","name":"Conditional Jump","function":"Nhảy có điều kiện","syntax":"CJ Pn","page":3,"image":"assets/structure/fnc_000_CJ.jpg"},{"id":"FNC01","kind":"Applied / FNC","fnc":"FNC01","mnemonic":"CALL","name":"Call Subroutine","function":"Gọi chương trình con","syntax":"CALL Pn","page":3,"image":"assets/structure/fnc_001_CALL.jpg"},{"id":"FNC02","kind":"Applied / FNC","fnc":"FNC02","mnemonic":"SRET","name":"Subroutine Return","function":"Kết thúc chương trình con","syntax":"SRET","page":3,"image":"assets/structure/fnc_002_SRET.jpg"},{"id":"FNC03","kind":"Applied / FNC","fnc":"FNC03","mnemonic":"IRET","name":"Interrupt Return","function":"Kết thúc routine ngắt","syntax":"IRET","page":3,"image":"assets/structure/fnc_003_IRET.jpg"},{"id":"FNC04","kind":"Applied / FNC","fnc":"FNC04","mnemonic":"EI","name":"Enable Interrupt","function":"Cho phép ngắt","syntax":"EI","page":3,"image":"assets/structure/fnc_004_EI.jpg"},{"id":"FNC05","kind":"Applied / FNC","fnc":"FNC05","mnemonic":"DI","name":"Disable Interrupt","function":"Cấm ngắt","syntax":"DI","page":3,"image":"assets/structure/fnc_005_DI.jpg"},{"id":"FNC06","kind":"Applied / FNC","fnc":"FNC06","mnemonic":"FEND","name":"Main Routine Program End","function":"Kết thúc chương trình chính","syntax":"FEND","page":3,"image":"assets/structure/fnc_006_FEND.jpg"},{"id":"FNC07","kind":"Applied / FNC","fnc":"FNC07","mnemonic":"WDT","name":"Watchdog Timer Refresh","function":"Làm mới watchdog timer","syntax":"WDT","page":3,"image":"assets/structure/fnc_007_WDT.jpg"},{"id":"FNC08","kind":"Applied / FNC","fnc":"FNC08","mnemonic":"FOR","name":"Start a FOR/NEXT Loop","function":"Bắt đầu vòng lặp FOR/NEXT","syntax":"FOR S","page":3,"image":"assets/structure/fnc_008_FOR.jpg"},{"id":"FNC09","kind":"Applied / FNC","fnc":"FNC09","mnemonic":"NEXT","name":"End a FOR/NEXT Loop","function":"Kết thúc vòng lặp FOR/NEXT","syntax":"NEXT","page":3,"image":"assets/structure/fnc_009_NEXT.jpg"},{"id":"FNC10","kind":"Applied / FNC","fnc":"FNC10","mnemonic":"CMP","name":"Compare","function":"So sánh hai giá trị","syntax":"CMP S1 S2 D","page":3,"image":"assets/structure/fnc_010_CMP.jpg"},{"id":"FNC11","kind":"Applied / FNC","fnc":"FNC11","mnemonic":"ZCP","name":"Zone Compare","function":"So sánh theo vùng","syntax":"ZCP S1 S2 S D","page":3,"image":"assets/structure/fnc_011_ZCP.jpg"},{"id":"FNC12","kind":"Applied / FNC","fnc":"FNC12","mnemonic":"MOV","name":"Move","function":"Di chuyển dữ liệu","syntax":"MOV S D","page":3,"image":"assets/structure/fnc_012_MOV.jpg"},{"id":"FNC13","kind":"Applied / FNC","fnc":"FNC13","mnemonic":"SMOV","name":"Shift Move","function":"Dịch chuyển dữ liệu theo digit","syntax":"SMOV S m1 m2 D n","page":4,"image":"assets/structure/fnc_013_SMOV.jpg"},{"id":"FNC14","kind":"Applied / FNC","fnc":"FNC14","mnemonic":"CML","name":"Complement","function":"Đảo/complement dữ liệu","syntax":"CML S D","page":4,"image":"assets/structure/fnc_014_CML.jpg"},{"id":"FNC15","kind":"Applied / FNC","fnc":"FNC15","mnemonic":"BMOV","name":"Block Move","function":"Sao chép một khối dữ liệu","syntax":"BMOV S D n","page":4,"image":"assets/structure/fnc_015_BMOV.jpg"},{"id":"FNC16","kind":"Applied / FNC","fnc":"FNC16","mnemonic":"FMOV","name":"Fill Move","function":"Ghi cùng giá trị vào nhiều word","syntax":"FMOV S D n","page":4,"image":"assets/structure/fnc_016_FMOV.jpg"},{"id":"FNC17","kind":"Applied / FNC","fnc":"FNC17","mnemonic":"XCH","name":"Exchange","function":"Trao đổi hai dữ liệu","syntax":"XCH D1 D2","page":4,"image":"assets/structure/fnc_017_XCH.jpg"},{"id":"FNC18","kind":"Applied / FNC","fnc":"FNC18","mnemonic":"BCD","name":"Conversion to Binary Coded Decimal","function":"Đổi sang BCD","syntax":"BCD S D","page":4,"image":"assets/structure/fnc_018_BCD.jpg"},{"id":"FNC19","kind":"Applied / FNC","fnc":"FNC19","mnemonic":"BIN","name":"Conversion to Binary","function":"Đổi sang binary","syntax":"BIN S D","page":4,"image":"assets/structure/fnc_019_BIN.jpg"},{"id":"FNC20","kind":"Applied / FNC","fnc":"FNC20","mnemonic":"ADD","name":"Addition","function":"Cộng","syntax":"ADD S1 S2 D","page":4,"image":"assets/structure/fnc_020_ADD.jpg"},{"id":"FNC21","kind":"Applied / FNC","fnc":"FNC21","mnemonic":"SUB","name":"Subtraction","function":"Trừ","syntax":"SUB S1 S2 D","page":4,"image":"assets/structure/fnc_021_SUB.jpg"},{"id":"FNC22","kind":"Applied / FNC","fnc":"FNC22","mnemonic":"MUL","name":"Multiplication","function":"Nhân","syntax":"MUL S1 S2 D","page":4,"image":"assets/structure/fnc_022_MUL.jpg"},{"id":"FNC23","kind":"Applied / FNC","fnc":"FNC23","mnemonic":"DIV","name":"Division","function":"Chia","syntax":"DIV S1 S2 D","page":4,"image":"assets/structure/fnc_023_DIV.jpg"},{"id":"FNC24","kind":"Applied / FNC","fnc":"FNC24","mnemonic":"INC","name":"Increment","function":"Tăng giá trị","syntax":"INC D","page":4,"image":"assets/structure/fnc_024_INC.jpg"},{"id":"FNC25","kind":"Applied / FNC","fnc":"FNC25","mnemonic":"DEC","name":"Decrement","function":"Giảm giá trị","syntax":"DEC D","page":4,"image":"assets/structure/fnc_025_DEC.jpg"},{"id":"FNC26","kind":"Applied / FNC","fnc":"FNC26","mnemonic":"WAND","name":"Logical Word AND","function":"AND theo word","syntax":"WAND S1 S2 D","page":4,"image":"assets/structure/fnc_026_WAND.jpg"},{"id":"FNC27","kind":"Applied / FNC","fnc":"FNC27","mnemonic":"WOR","name":"Logical Word OR","function":"OR theo word","syntax":"WOR S1 S2 D","page":4,"image":"assets/structure/fnc_027_WOR.jpg"},{"id":"FNC28","kind":"Applied / FNC","fnc":"FNC28","mnemonic":"WXOR","name":"Logical Exclusive OR","function":"XOR theo word","syntax":"WXOR S1 S2 D","page":4,"image":"assets/structure/fnc_028_WXOR.jpg"},{"id":"FNC29","kind":"Applied / FNC","fnc":"FNC29","mnemonic":"NEG","name":"Negation","function":"Đổi dấu","syntax":"NEG D","page":4,"image":"assets/structure/fnc_029_NEG.jpg"},{"id":"FNC30","kind":"Applied / FNC","fnc":"FNC30","mnemonic":"ROR","name":"Rotation Right","function":"Xoay phải","syntax":"ROR D n","page":4,"image":"assets/structure/fnc_030_ROR.jpg"},{"id":"FNC31","kind":"Applied / FNC","fnc":"FNC31","mnemonic":"ROL","name":"Rotation Left","function":"Xoay trái","syntax":"ROL D n","page":4,"image":"assets/structure/fnc_031_ROL.jpg"},{"id":"FNC32","kind":"Applied / FNC","fnc":"FNC32","mnemonic":"RCR","name":"Rotation Right with Carry","function":"Xoay phải có carry","syntax":"RCR D n","page":4,"image":"assets/structure/fnc_032_RCR.jpg"},{"id":"FNC33","kind":"Applied / FNC","fnc":"FNC33","mnemonic":"RCL","name":"Rotation Left with Carry","function":"Xoay trái có carry","syntax":"RCL D n","page":4,"image":"assets/structure/fnc_033_RCL.jpg"},{"id":"FNC34","kind":"Applied / FNC","fnc":"FNC34","mnemonic":"SFTR","name":"Bit Shift Right","function":"Dịch bit phải","syntax":"SFTR S D n1 n2","page":5,"image":"assets/structure/fnc_034_SFTR.jpg"},{"id":"FNC35","kind":"Applied / FNC","fnc":"FNC35","mnemonic":"SFTL","name":"Bit Shift Left","function":"Dịch bit trái","syntax":"SFTL S D n1 n2","page":5,"image":"assets/structure/fnc_035_SFTL.jpg"},{"id":"FNC36","kind":"Applied / FNC","fnc":"FNC36","mnemonic":"WSFR","name":"Word Shift Right","function":"Dịch word phải","syntax":"WSFR S D n1 n2","page":5,"image":"assets/structure/fnc_036_WSFR.jpg"},{"id":"FNC37","kind":"Applied / FNC","fnc":"FNC37","mnemonic":"WSFL","name":"Word Shift Left","function":"Dịch word trái","syntax":"WSFL S D n1 n2","page":5,"image":"assets/structure/fnc_037_WSFL.jpg"},{"id":"FNC38","kind":"Applied / FNC","fnc":"FNC38","mnemonic":"SFWR","name":"Shift write [FIFO/FILO control]","function":"Ghi dữ liệu FIFO/FILO","syntax":"SFWR S D n","page":5,"image":"assets/structure/fnc_038_SFWR.jpg"},{"id":"FNC39","kind":"Applied / FNC","fnc":"FNC39","mnemonic":"SFRD","name":"Shift Read [FIFO Control]","function":"Đọc dữ liệu FIFO","syntax":"SFRD S D n","page":5,"image":"assets/structure/fnc_039_SFRD.jpg"},{"id":"FNC40","kind":"Applied / FNC","fnc":"FNC40","mnemonic":"ZRST","name":"Zone Reset","function":"Reset một vùng device","syntax":"ZRST D1 D2","page":5,"image":"assets/structure/fnc_040_ZRST.jpg"},{"id":"FNC41","kind":"Applied / FNC","fnc":"FNC41","mnemonic":"DECO","name":"Decode","function":"Decode","syntax":"DECO S D n","page":5,"image":"assets/structure/fnc_041_DECO.jpg"},{"id":"FNC42","kind":"Applied / FNC","fnc":"FNC42","mnemonic":"ENCO","name":"Encode","function":"Encode","syntax":"ENCO S D n","page":5,"image":"assets/structure/fnc_042_ENCO.jpg"},{"id":"FNC43","kind":"Applied / FNC","fnc":"FNC43","mnemonic":"SUM","name":"Sum of Active Bits","function":"Đếm số bit ON","syntax":"SUM S D","page":5,"image":"assets/structure/fnc_043_SUM.jpg"},{"id":"FNC44","kind":"Applied / FNC","fnc":"FNC44","mnemonic":"BON","name":"Check Specified Bit Status","function":"Kiểm tra trạng thái bit","syntax":"BON S D n","page":5,"image":"assets/structure/fnc_044_BON.jpg"},{"id":"FNC45","kind":"Applied / FNC","fnc":"FNC45","mnemonic":"MEAN","name":"Mean","function":"Tính giá trị trung bình","syntax":"MEAN S D n","page":5,"image":"assets/structure/fnc_045_MEAN.jpg"},{"id":"FNC46","kind":"Applied / FNC","fnc":"FNC46","mnemonic":"ANS","name":"Timed Annunciator Set","function":"Timed annunciator set","syntax":"ANS S m D","page":5,"image":"assets/structure/fnc_046_ANS.jpg"},{"id":"FNC47","kind":"Applied / FNC","fnc":"FNC47","mnemonic":"ANR","name":"Annunciator Reset","function":"Reset annunciator","syntax":"ANR","page":5,"image":"assets/structure/fnc_047_ANR.jpg"},{"id":"FNC48","kind":"Applied / FNC","fnc":"FNC48","mnemonic":"SQR","name":"Square Root","function":"Căn bậc hai","syntax":"SQR S D","page":5,"image":"assets/structure/fnc_048_SQR.jpg"},{"id":"FNC49","kind":"Applied / FNC","fnc":"FNC49","mnemonic":"FLT","name":"Conversion to Floating Point","function":"Đổi integer sang floating point","syntax":"FLT S D","page":5,"image":"assets/structure/fnc_049_FLT.jpg"},{"id":"FNC50","kind":"Applied / FNC","fnc":"FNC50","mnemonic":"REF","name":"Refresh","function":"Refresh I/O","syntax":"REF D n","page":5,"image":"assets/structure/fnc_050_REF.jpg"},{"id":"FNC51","kind":"Applied / FNC","fnc":"FNC51","mnemonic":"REFF","name":"Refresh and Filter Adjust","function":"Refresh và điều chỉnh filter","syntax":"REFF n","page":5,"image":"assets/structure/fnc_051_REFF.jpg"},{"id":"FNC52","kind":"Applied / FNC","fnc":"FNC52","mnemonic":"MTR","name":"Input Matrix","function":"Input matrix","syntax":"MTR S D1 D2 n","page":5,"image":"assets/structure/fnc_052_MTR.jpg"},{"id":"FNC53","kind":"Applied / FNC","fnc":"FNC53","mnemonic":"HSCS","name":"High-speed Counter Set","function":"High-speed counter set","syntax":"HSCS S1 S2 D","page":5,"image":"assets/structure/fnc_053_HSCS.jpg"},{"id":"FNC54","kind":"Applied / FNC","fnc":"FNC54","mnemonic":"HSCR","name":"High-speed Counter Reset","function":"High-speed counter reset","syntax":"HSCR S1 S2 D","page":5,"image":"assets/structure/fnc_054_HSCR.jpg"},{"id":"FNC55","kind":"Applied / FNC","fnc":"FNC55","mnemonic":"HSZ","name":"High-speed Counter Zone Compare","function":"High-speed counter zone compare","syntax":"HSZ S1 S2 S D","page":6,"image":"assets/structure/fnc_055_HSZ.jpg"},{"id":"FNC56","kind":"Applied / FNC","fnc":"FNC56","mnemonic":"SPD","name":"Speed Detection","function":"Đo tốc độ xung","syntax":"SPD S1 S2 D","page":6,"image":"assets/structure/fnc_056_SPD.jpg"},{"id":"FNC57","kind":"Applied / FNC","fnc":"FNC57","mnemonic":"PLSY","name":"Pulse Y Output","function":"Phát xung Y","syntax":"PLSY S1 S2 D","page":6,"image":"assets/structure/fnc_057_PLSY.jpg"},{"id":"FNC58","kind":"Applied / FNC","fnc":"FNC58","mnemonic":"PWM","name":"Pulse Width Modulation","function":"Phát PWM","syntax":"PWM S1 S2 D","page":6,"image":"assets/structure/fnc_058_PWM.jpg"},{"id":"FNC59","kind":"Applied / FNC","fnc":"FNC59","mnemonic":"PLSR","name":"Acceleration/Deceleration Setup","function":"Phát xung có tăng/giảm tốc","syntax":"PLSR S1 S2 S3 D","page":6,"image":"assets/structure/fnc_059_PLSR.jpg"},{"id":"FNC60","kind":"Applied / FNC","fnc":"FNC60","mnemonic":"IST","name":"Initial State","function":"Initial State","syntax":"IST S D1 D2","page":6,"image":"assets/structure/fnc_060_IST.jpg"},{"id":"FNC61","kind":"Applied / FNC","fnc":"FNC61","mnemonic":"SER","name":"Search a Data Stack","function":"Tìm kiếm trong vùng dữ liệu","syntax":"SER S1 S2 D n","page":6,"image":"assets/structure/fnc_061_SER.jpg"},{"id":"FNC62","kind":"Applied / FNC","fnc":"FNC62","mnemonic":"ABSD","name":"Absolute Drum Sequencer","function":"Absolute drum sequencer","syntax":"ABSD S1 S2 D n","page":6,"image":"assets/structure/fnc_062_ABSD.jpg"},{"id":"FNC63","kind":"Applied / FNC","fnc":"FNC63","mnemonic":"INCD","name":"Incremental Drum Sequencer","function":"Incremental drum sequencer","syntax":"INCD S1 S2 D n","page":6,"image":"assets/structure/fnc_063_INCD.jpg"},{"id":"FNC64","kind":"Applied / FNC","fnc":"FNC64","mnemonic":"TTMR","name":"Teaching Timer","function":"Teaching timer","syntax":"TTMR D n","page":6,"image":"assets/structure/fnc_064_TTMR.jpg"},{"id":"FNC65","kind":"Applied / FNC","fnc":"FNC65","mnemonic":"STMR","name":"Special Timer","function":"Special timer","syntax":"STMR S m D","page":6,"image":"assets/structure/fnc_065_STMR.jpg"},{"id":"FNC66","kind":"Applied / FNC","fnc":"FNC66","mnemonic":"ALT","name":"Alternate State","function":"Đảo trạng thái","syntax":"ALT D","page":6,"image":"assets/structure/fnc_066_ALT.jpg"},{"id":"FNC67","kind":"Applied / FNC","fnc":"FNC67","mnemonic":"RAMP","name":"Ramp Variable Value","function":"Tạo giá trị ramp","syntax":"RAMP S1 S2 D n","page":6,"image":"assets/structure/fnc_067_RAMP.jpg"},{"id":"FNC68","kind":"Applied / FNC","fnc":"FNC68","mnemonic":"ROTC","name":"Rotary Table Control","function":"Điều khiển rotary table","syntax":"ROTC S m1 m2 D","page":6,"image":"assets/structure/fnc_068_ROTC.jpg"},{"id":"FNC69","kind":"Applied / FNC","fnc":"FNC69","mnemonic":"SORT","name":"SORT Tabulated Data","function":"Sắp xếp dữ liệu","syntax":"SORT S m1 m2 D n","page":6,"image":"assets/structure/fnc_069_SORT.jpg"},{"id":"FNC70","kind":"Applied / FNC","fnc":"FNC70","mnemonic":"TKY","name":"Ten Key Input","function":"Nhập bằng ten-key","syntax":"TKY S D1 D2","page":6,"image":"assets/structure/fnc_070_TKY.jpg"},{"id":"FNC71","kind":"Applied / FNC","fnc":"FNC71","mnemonic":"HKY","name":"Hexadecimal Input","function":"Nhập hexadecimal","syntax":"HKY S D1 D2 D3","page":6,"image":"assets/structure/fnc_071_HKY.jpg"},{"id":"FNC72","kind":"Applied / FNC","fnc":"FNC72","mnemonic":"DSW","name":"Digital Switch (Thumbwheel Input)","function":"Digital switch/thumwheel input","syntax":"DSW S D1 D2 n","page":6,"image":"assets/structure/fnc_072_DSW.jpg"},{"id":"FNC73","kind":"Applied / FNC","fnc":"FNC73","mnemonic":"SEGD","name":"Seven Segment Decoder","function":"Giải mã seven-segment","syntax":"SEGD S D","page":6,"image":"assets/structure/fnc_073_SEGD.jpg"},{"id":"FNC74","kind":"Applied / FNC","fnc":"FNC74","mnemonic":"SEGL","name":"Seven Segment With Latch","function":"Seven-segment có latch","syntax":"SEGL S D n","page":6,"image":"assets/structure/fnc_074_SEGL.jpg"},{"id":"FNC75","kind":"Applied / FNC","fnc":"FNC75","mnemonic":"ARWS","name":"Arrow Switch","function":"Arrow switch","syntax":"ARWS S D1 D2 n","page":7,"image":"assets/structure/fnc_075_ARWS.jpg"},{"id":"FNC76","kind":"Applied / FNC","fnc":"FNC76","mnemonic":"ASC","name":"ASCII Code Data Input","function":"Nhập dữ liệu ASCII","syntax":"ASC S D","page":7,"image":"assets/structure/fnc_076_ASC.jpg"},{"id":"FNC77","kind":"Applied / FNC","fnc":"FNC77","mnemonic":"PR","name":"Print (ASCII Code)","function":"In ASCII","syntax":"PR S D","page":7,"image":"assets/structure/fnc_077_PR.jpg"},{"id":"FNC78","kind":"Applied / FNC","fnc":"FNC78","mnemonic":"FROM","name":"Read From A Special Function Block","function":"Đọc từ special function block","syntax":"FROM m1 m2 D n","page":7,"image":"assets/structure/fnc_078_FROM.jpg"},{"id":"FNC79","kind":"Applied / FNC","fnc":"FNC79","mnemonic":"TO","name":"Write To A Special Function Block","function":"Ghi vào special function block","syntax":"TO m1 m2 S n","page":7,"image":"assets/structure/fnc_079_TO.jpg"},{"id":"FNC80","kind":"Applied / FNC","fnc":"FNC80","mnemonic":"RS","name":"Serial Communication","function":"Serial communication","syntax":"RS S m D n","page":7,"image":"assets/structure/fnc_080_RS.jpg"},{"id":"FNC81","kind":"Applied / FNC","fnc":"FNC81","mnemonic":"PRUN","name":"Parallel Run (Octal Mode)","function":"Parallel run octal mode","syntax":"PRUN S D","page":7,"image":"assets/structure/fnc_081_PRUN.jpg"},{"id":"FNC82","kind":"Applied / FNC","fnc":"FNC82","mnemonic":"ASCI","name":"Hexadecimal to ASCII Conversion","function":"Hexadecimal → ASCII","syntax":"ASCI S D n","page":7,"image":"assets/structure/fnc_082_ASCI.jpg"},{"id":"FNC83","kind":"Applied / FNC","fnc":"FNC83","mnemonic":"HEX","name":"ASCII to Hexadecimal Conversion","function":"ASCII → hexadecimal","syntax":"HEX S D n","page":7,"image":"assets/structure/fnc_083_HEX.jpg"},{"id":"FNC84","kind":"Applied / FNC","fnc":"FNC84","mnemonic":"CCD","name":"Check Code","function":"Tạo/check code","syntax":"CCD S D n","page":7,"image":"assets/structure/fnc_084_CCD.jpg"},{"id":"FNC85","kind":"Applied / FNC","fnc":"FNC85","mnemonic":"VRRD","name":"Volume Read","function":"Đọc volume","syntax":"VRRD S D","page":7,"image":"assets/structure/fnc_085_VRRD.jpg"},{"id":"FNC86","kind":"Applied / FNC","fnc":"FNC86","mnemonic":"VRSC","name":"Volume Scale","function":"Scale volume","syntax":"VRSC S D","page":7,"image":"assets/structure/fnc_086_VRSC.jpg"},{"id":"FNC87","kind":"Applied / FNC","fnc":"FNC87","mnemonic":"RS2","name":"Serial Communication 2","function":"Serial communication 2","syntax":"RS2 S m D n n1","page":7,"image":"assets/structure/fnc_087_RS2.jpg"},{"id":"FNC88","kind":"Applied / FNC","fnc":"FNC88","mnemonic":"PID","name":"PID Control Loop","function":"PID control loop","syntax":"PID S1 S2 S3 D","page":7,"image":"assets/structure/fnc_088_PID.jpg"},{"id":"FNC102","kind":"Applied / FNC","fnc":"FNC102","mnemonic":"ZPUSH","name":"Batch Store of Index Register","function":"Batch store index registers","syntax":"ZPUSH D","page":7,"image":"assets/structure/fnc_102_ZPUSH.jpg"},{"id":"FNC103","kind":"Applied / FNC","fnc":"FNC103","mnemonic":"ZPOP","name":"Batch POP of Index Register","function":"Batch POP index registers","syntax":"ZPOP D","page":7,"image":"assets/structure/fnc_103_ZPOP.jpg"},{"id":"FNC110","kind":"Applied / FNC","fnc":"FNC110","mnemonic":"ECMP","name":"Floating Point Compare","function":"So sánh floating point","syntax":"ECMP S1 S2 D","page":7,"image":"assets/structure/fnc_110_ECMP.jpg"},{"id":"FNC111","kind":"Applied / FNC","fnc":"FNC111","mnemonic":"EZCP","name":"Floating Point Zone Compare","function":"So sánh vùng floating point","syntax":"EZCP S1 S2 S D","page":7,"image":"assets/structure/fnc_111_EZCP.jpg"},{"id":"FNC112","kind":"Applied / FNC","fnc":"FNC112","mnemonic":"EMOV","name":"Floating Point Move","function":"Di chuyển floating point","syntax":"EMOV S D","page":7,"image":"assets/structure/fnc_112_EMOV.jpg"},{"id":"FNC116","kind":"Applied / FNC","fnc":"FNC116","mnemonic":"ESTR","name":"Floating Point to Character String Conversion","function":"Floating point → character string","syntax":"ESTR S1 S2 D","page":7,"image":"assets/structure/fnc_116_ESTR.jpg"},{"id":"FNC117","kind":"Applied / FNC","fnc":"FNC117","mnemonic":"EVAL","name":"Character String to Floating Point Conversion","function":"Character string → floating point","syntax":"EVAL S D","page":7,"image":"assets/structure/fnc_117_EVAL.jpg"},{"id":"FNC118","kind":"Applied / FNC","fnc":"FNC118","mnemonic":"EBCD","name":"Floating Point to Scientific Notation Conversion","function":"Floating point → scientific notation","syntax":"EBCD S D","page":8,"image":"assets/structure/fnc_118_EBCD.jpg"},{"id":"FNC119","kind":"Applied / FNC","fnc":"FNC119","mnemonic":"EBIN","name":"Scientific Notation to Floating Point Conversion","function":"Scientific notation → floating point","syntax":"EBIN S D","page":8,"image":"assets/structure/fnc_119_EBIN.jpg"},{"id":"FNC120","kind":"Applied / FNC","fnc":"FNC120","mnemonic":"EADD","name":"Floating Point Addition","function":"Cộng floating point","syntax":"EADD S1 S2 D","page":8,"image":"assets/structure/fnc_120_EADD.jpg"},{"id":"FNC121","kind":"Applied / FNC","fnc":"FNC121","mnemonic":"ESUB","name":"Floating Point Subtraction","function":"Trừ floating point","syntax":"ESUB S1 S2 D","page":8,"image":"assets/structure/fnc_121_ESUB.jpg"},{"id":"FNC122","kind":"Applied / FNC","fnc":"FNC122","mnemonic":"EMUL","name":"Floating Point Multiplication","function":"Nhân floating point","syntax":"EMUL S1 S2 D","page":8,"image":"assets/structure/fnc_122_EMUL.jpg"},{"id":"FNC123","kind":"Applied / FNC","fnc":"FNC123","mnemonic":"EDIV","name":"Floating Point Division","function":"Chia floating point","syntax":"EDIV S1 S2 D","page":8,"image":"assets/structure/fnc_123_EDIV.jpg"},{"id":"FNC124","kind":"Applied / FNC","fnc":"FNC124","mnemonic":"EXP","name":"Floating Point Exponent","function":"Hàm mũ floating point","syntax":"EXP S D","page":8,"image":"assets/structure/fnc_124_EXP.jpg"},{"id":"FNC125","kind":"Applied / FNC","fnc":"FNC125","mnemonic":"LOGE","name":"Floating Point Natural Logarithm","function":"Log tự nhiên floating point","syntax":"LOGE S D","page":8,"image":"assets/structure/fnc_125_LOGE.jpg"},{"id":"FNC126","kind":"Applied / FNC","fnc":"FNC126","mnemonic":"LOG10","name":"Floating Point Common Logarithm","function":"Log cơ số 10 floating point","syntax":"LOG10 S D","page":8,"image":"assets/structure/fnc_126_LOG10.jpg"},{"id":"FNC127","kind":"Applied / FNC","fnc":"FNC127","mnemonic":"ESQR","name":"Floating Point Square Root","function":"Căn bậc hai floating point","syntax":"ESQR S D","page":8,"image":"assets/structure/fnc_127_ESQR.jpg"},{"id":"FNC128","kind":"Applied / FNC","fnc":"FNC128","mnemonic":"ENEG","name":"Floating Point Negation","function":"Đổi dấu floating point","syntax":"ENEG D","page":8,"image":"assets/structure/fnc_128_ENEG.jpg"},{"id":"FNC129","kind":"Applied / FNC","fnc":"FNC129","mnemonic":"INT","name":"Floating Point to Integer Conversion","function":"Floating point → integer","syntax":"INT S D","page":8,"image":"assets/structure/fnc_129_INT.jpg"},{"id":"FNC130","kind":"Applied / FNC","fnc":"FNC130","mnemonic":"SIN","name":"Floating Point Sine","function":"Sin floating point","syntax":"SIN S D","page":8,"image":"assets/structure/fnc_130_SIN.jpg"},{"id":"FNC131","kind":"Applied / FNC","fnc":"FNC131","mnemonic":"COS","name":"Floating Point Cosine","function":"Cos floating point","syntax":"COS S D","page":8,"image":"assets/structure/fnc_131_COS.jpg"},{"id":"FNC132","kind":"Applied / FNC","fnc":"FNC132","mnemonic":"TAN","name":"Floating Point Tangent","function":"Tan floating point","syntax":"TAN S D","page":8,"image":"assets/structure/fnc_132_TAN.jpg"},{"id":"FNC133","kind":"Applied / FNC","fnc":"FNC133","mnemonic":"ASIN","name":"Floating Point Arc Sine","function":"Arc sine floating point","syntax":"ASIN S D","page":8,"image":"assets/structure/fnc_133_ASIN.jpg"},{"id":"FNC134","kind":"Applied / FNC","fnc":"FNC134","mnemonic":"ACOS","name":"Floating Point Arc Cosine","function":"Arc cosine floating point","syntax":"ACOS S D","page":8,"image":"assets/structure/fnc_134_ACOS.jpg"},{"id":"FNC135","kind":"Applied / FNC","fnc":"FNC135","mnemonic":"ATAN","name":"Floating Point Arc Tangent","function":"Arc tangent floating point","syntax":"ATAN S D","page":8,"image":"assets/structure/fnc_135_ATAN.jpg"},{"id":"FNC136","kind":"Applied / FNC","fnc":"FNC136","mnemonic":"RAD","name":"Floating Point Degrees to Radians Conversion","function":"Độ → radian","syntax":"RAD S D","page":8,"image":"assets/structure/fnc_136_RAD.jpg"},{"id":"FNC137","kind":"Applied / FNC","fnc":"FNC137","mnemonic":"DEG","name":"Floating Point Radians to Degrees Conversion","function":"Radian → độ","syntax":"DEG S D","page":8,"image":"assets/structure/fnc_137_DEG.jpg"},{"id":"FNC140","kind":"Applied / FNC","fnc":"FNC140","mnemonic":"WSUM","name":"Sum of Word Data","function":"Tổng word data","syntax":"WSUM S D n","page":8,"image":"assets/structure/fnc_140_WSUM.jpg"},{"id":"FNC141","kind":"Applied / FNC","fnc":"FNC141","mnemonic":"WTOB","name":"WORD to BYTE","function":"WORD → BYTE","syntax":"WTOB S D n","page":8,"image":"assets/structure/fnc_141_WTOB.jpg"},{"id":"FNC142","kind":"Applied / FNC","fnc":"FNC142","mnemonic":"BTOW","name":"BYTE to WORD","function":"BYTE → WORD","syntax":"BTOW S D n","page":9,"image":"assets/structure/fnc_142_BTOW.jpg"},{"id":"FNC143","kind":"Applied / FNC","fnc":"FNC143","mnemonic":"UNI","name":"4-bit Linking of Word Data","function":"Liên kết word theo 4-bit","syntax":"UNI S D n","page":9,"image":"assets/structure/fnc_143_UNI.jpg"},{"id":"FNC144","kind":"Applied / FNC","fnc":"FNC144","mnemonic":"DIS","name":"4-bit Grouping of Word Data","function":"Nhóm word theo 4-bit","syntax":"DIS S D n","page":9,"image":"assets/structure/fnc_144_DIS.jpg"},{"id":"FNC147","kind":"Applied / FNC","fnc":"FNC147","mnemonic":"SWAP","name":"Byte Swap","function":"Đổi byte","syntax":"SWAP S","page":9,"image":"assets/structure/fnc_147_SWAP.jpg"},{"id":"FNC149","kind":"Applied / FNC","fnc":"FNC149","mnemonic":"SORT2","name":"Sort Tabulated Data 2","function":"Sắp xếp bảng dữ liệu 2","syntax":"SORT2 S m1 m2 D n","page":9,"image":"assets/structure/fnc_149_SORT2.jpg"},{"id":"FNC150","kind":"Applied / FNC","fnc":"FNC150","mnemonic":"DSZR","name":"DOG Search Zero Return","function":"DOG search zero return","syntax":"DSZR S1 S2 D1 D2","page":9,"image":"assets/structure/fnc_150_DSZR.jpg"},{"id":"FNC151","kind":"Applied / FNC","fnc":"FNC151","mnemonic":"DVIT","name":"Interrupt Positioning","function":"Interrupt positioning","syntax":"DVIT S1 S2 D1 D2","page":9,"image":"assets/structure/fnc_151_DVIT.jpg"},{"id":"FNC152","kind":"Applied / FNC","fnc":"FNC152","mnemonic":"TBL","name":"Batch Data Positioning Mode","function":"Batch data positioning","syntax":"TBL D n","page":9,"image":"assets/structure/fnc_152_TBL.jpg"},{"id":"FNC155","kind":"Applied / FNC","fnc":"FNC155","mnemonic":"ABS","name":"Absolute Current Value Read","function":"Đọc giá trị tuyệt đối hiện tại","syntax":"ABS S D1 D2","page":9,"image":"assets/structure/fnc_155_ABS.jpg"},{"id":"FNC156","kind":"Applied / FNC","fnc":"FNC156","mnemonic":"ZRN","name":"Zero Return","function":"Zero return","syntax":"ZRN S1 S2 S3 D","page":9,"image":"assets/structure/fnc_156_ZRN.jpg"},{"id":"FNC157","kind":"Applied / FNC","fnc":"FNC157","mnemonic":"PLSV","name":"Variable Speed Pulse Output","function":"Phát xung tốc độ biến đổi","syntax":"PLSV S D1 D2","page":9,"image":"assets/structure/fnc_157_PLSV.jpg"},{"id":"FNC158","kind":"Applied / FNC","fnc":"FNC158","mnemonic":"DRVI","name":"Drive to Increment","function":"Drive to increment","syntax":"DRVI S1 S2 D1 D2","page":9,"image":"assets/structure/fnc_158_DRVI.jpg"},{"id":"FNC159","kind":"Applied / FNC","fnc":"FNC159","mnemonic":"DRVA","name":"Drive to Absolute","function":"Drive to absolute","syntax":"DRVA S1 S2 D1 D2","page":9,"image":"assets/structure/fnc_159_DRVA.jpg"},{"id":"FNC160","kind":"Applied / FNC","fnc":"FNC160","mnemonic":"TCMP","name":"RTC Data Compare","function":"So sánh dữ liệu RTC","syntax":"TCMP S1 S2 S3 S D","page":9,"image":"assets/structure/fnc_160_TCMP.jpg"},{"id":"FNC161","kind":"Applied / FNC","fnc":"FNC161","mnemonic":"TZCP","name":"RTC Data Zone Compare","function":"So sánh vùng RTC","syntax":"TZCP S1 S2 S D","page":9,"image":"assets/structure/fnc_161_TZCP.jpg"},{"id":"FNC162","kind":"Applied / FNC","fnc":"FNC162","mnemonic":"TADD","name":"RTC Data Addition","function":"Cộng dữ liệu RTC","syntax":"TADD S1 S2 D","page":9,"image":"assets/structure/fnc_162_TADD.jpg"},{"id":"FNC163","kind":"Applied / FNC","fnc":"FNC163","mnemonic":"TSUB","name":"RTC Data Subtraction","function":"Trừ dữ liệu RTC","syntax":"TSUB S1 S2 D","page":9,"image":"assets/structure/fnc_163_TSUB.jpg"},{"id":"FNC164","kind":"Applied / FNC","fnc":"FNC164","mnemonic":"HTOS","name":"Hour to Second Conversion","function":"Giờ → giây","syntax":"HTOS S D","page":9,"image":"assets/structure/fnc_164_HTOS.jpg"},{"id":"FNC165","kind":"Applied / FNC","fnc":"FNC165","mnemonic":"STOH","name":"Second to Hour Conversion","function":"Giây → giờ","syntax":"STOH S D","page":9,"image":"assets/structure/fnc_165_STOH.jpg"},{"id":"FNC166","kind":"Applied / FNC","fnc":"FNC166","mnemonic":"TRD","name":"Read RTC data","function":"Đọc RTC","syntax":"TRD D","page":9,"image":"assets/structure/fnc_166_TRD.jpg"},{"id":"FNC167","kind":"Applied / FNC","fnc":"FNC167","mnemonic":"TWR","name":"Set RTC data","function":"Ghi RTC","syntax":"TWR S","page":9,"image":"assets/structure/fnc_167_TWR.jpg"},{"id":"FNC169","kind":"Applied / FNC","fnc":"FNC169","mnemonic":"HOUR","name":"Hour Meter","function":"Hour meter","syntax":"HOUR S D1 D2","page":9,"image":"assets/structure/fnc_169_HOUR.jpg"},{"id":"FNC170","kind":"Applied / FNC","fnc":"FNC170","mnemonic":"GRY","name":"Decimal to Gray Code Conversion","function":"Decimal → Gray code","syntax":"GRY S D","page":10,"image":"assets/structure/fnc_170_GRY.jpg"},{"id":"FNC171","kind":"Applied / FNC","fnc":"FNC171","mnemonic":"GBIN","name":"Gray Code to Decimal Conversion","function":"Gray code → decimal","syntax":"GBIN S D","page":10,"image":"assets/structure/fnc_171_GBIN.jpg"},{"id":"FNC176","kind":"Applied / FNC","fnc":"FNC176","mnemonic":"RD3A","name":"Read form Dedicated Analog Block","function":"Đọc dedicated analog block","syntax":"RD3A m1 m2 D","page":10,"image":"assets/structure/fnc_176_RD3A.jpg"},{"id":"FNC177","kind":"Applied / FNC","fnc":"FNC177","mnemonic":"WR3A","name":"Write to Dedicated Analog Block","function":"Ghi dedicated analog block","syntax":"WR3A m1 m2 S","page":10,"image":"assets/structure/fnc_177_WR3A.jpg"},{"id":"FNC180","kind":"Applied / FNC","fnc":"FNC180","mnemonic":"EXTR","name":"External ROM Function (FX2N/FX2NC)","function":"External ROM Function (FX2N/FX2NC)","syntax":"EXTR S SD1 SD2 SD3","page":10,"image":"assets/structure/fnc_180_EXTR.jpg"},{"id":"FNC182","kind":"Applied / FNC","fnc":"FNC182","mnemonic":"COMRD","name":"Read Device Comment Data","function":"Đọc device comment data","syntax":"COMRD S D","page":10,"image":"assets/structure/fnc_182_COMRD.jpg"},{"id":"FNC184","kind":"Applied / FNC","fnc":"FNC184","mnemonic":"RND","name":"Random Number Generation","function":"Tạo số ngẫu nhiên","syntax":"RND D","page":10,"image":"assets/structure/fnc_184_RND.jpg"},{"id":"FNC186","kind":"Applied / FNC","fnc":"FNC186","mnemonic":"DUTY","name":"Timing Pulse Generation","function":"Tạo timing pulse","syntax":"DUTY n1 n2 D","page":10,"image":"assets/structure/fnc_186_DUTY.jpg"},{"id":"FNC188","kind":"Applied / FNC","fnc":"FNC188","mnemonic":"CRC","name":"Cyclic Redundancy Check","function":"Cyclic redundancy check","syntax":"CRC S D n","page":10,"image":"assets/structure/fnc_188_CRC.jpg"},{"id":"FNC189","kind":"Applied / FNC","fnc":"FNC189","mnemonic":"HCMOV","name":"High-speed Counter Move","function":"High-speed counter move","syntax":"HCMOV S D n","page":10,"image":"assets/structure/fnc_189_HCMOV.jpg"},{"id":"FNC192","kind":"Applied / FNC","fnc":"FNC192","mnemonic":"BK+","name":"Block Data Addition","function":"Cộng block data","syntax":"BK+ S1 S2 D n","page":10,"image":"assets/structure/fnc_192_BK_.jpg"},{"id":"FNC193","kind":"Applied / FNC","fnc":"FNC193","mnemonic":"BK-","name":"Block Data Subtraction","function":"Trừ block data","syntax":"BK- S1 S2 D n","page":10,"image":"assets/structure/fnc_193_BK_.jpg"},{"id":"FNC194","kind":"Applied / FNC","fnc":"FNC194","mnemonic":"BKCMP=","name":"Block Data Compare S1 S2 =","function":"So sánh block bằng","syntax":"BKCMP= S1 S2 D n","page":10,"image":"assets/structure/fnc_194_BKCMP_.jpg"},{"id":"FNC195","kind":"Applied / FNC","fnc":"FNC195","mnemonic":"BKCMP>","name":"Block Data Compare S1 S2 >","function":"So sánh block lớn hơn","syntax":"BKCMP> S1 S2 D n","page":10,"image":"assets/structure/fnc_195_BKCMP_.jpg"},{"id":"FNC196","kind":"Applied / FNC","fnc":"FNC196","mnemonic":"BKCMP<","name":"Block Data Compare S1 S2 <","function":"So sánh block nhỏ hơn","syntax":"BKCMP< S1 S2 D n","page":10,"image":"assets/structure/fnc_196_BKCMP_.jpg"},{"id":"FNC197","kind":"Applied / FNC","fnc":"FNC197","mnemonic":"BKCMP<>","name":"Block Data Compare ≠ S1 S2","function":"So sánh block khác","syntax":"BKCMP<> S1 S2 D n","page":10,"image":"assets/structure/fnc_197_BKCMP_.jpg"},{"id":"FNC198","kind":"Applied / FNC","fnc":"FNC198","mnemonic":"BKCMP<=","name":"Block Data Compare ≤ S1 S2","function":"So sánh block nhỏ hơn/bằng","syntax":"BKCMP<= S1 S2 D n","page":10,"image":"assets/structure/fnc_198_BKCMP_.jpg"},{"id":"FNC199","kind":"Applied / FNC","fnc":"FNC199","mnemonic":"BKCMP>=","name":"Block Data Compare ≥ S1 S2","function":"So sánh block lớn hơn/bằng","syntax":"BKCMP>= S1 S2 D n","page":10,"image":"assets/structure/fnc_199_BKCMP_.jpg"},{"id":"FNC200","kind":"Applied / FNC","fnc":"FNC200","mnemonic":"STR","name":"BIN to Character String Conversion","function":"BIN → character string","syntax":"STR S1 S2 D","page":10,"image":"assets/structure/fnc_200_STR.jpg"},{"id":"FNC201","kind":"Applied / FNC","fnc":"FNC201","mnemonic":"VAL","name":"Character String to BIN Conversion","function":"Character string → BIN","syntax":"VAL S D1 D2","page":10,"image":"assets/structure/fnc_201_VAL.jpg"},{"id":"FNC202","kind":"Applied / FNC","fnc":"FNC202","mnemonic":"$+","name":"Link Character Strings","function":"Nối chuỗi","syntax":"$+ S1 S2 D","page":11,"image":"assets/structure/fnc_202__.jpg"},{"id":"FNC203","kind":"Applied / FNC","fnc":"FNC203","mnemonic":"LEN","name":"Character String Length Detection","function":"Lấy độ dài chuỗi","syntax":"LEN S D","page":11,"image":"assets/structure/fnc_203_LEN.jpg"},{"id":"FNC204","kind":"Applied / FNC","fnc":"FNC204","mnemonic":"RIGHT","name":"Extracting Character String Data from the Right","function":"Lấy chuỗi từ bên phải","syntax":"RIGHT S D n","page":11,"image":"assets/structure/fnc_204_RIGHT.jpg"},{"id":"FNC205","kind":"Applied / FNC","fnc":"FNC205","mnemonic":"LEFT","name":"Extracting Character String Data from the Left","function":"Lấy chuỗi từ bên trái","syntax":"LEFT S D n","page":11,"image":"assets/structure/fnc_205_LEFT.jpg"},{"id":"FNC206","kind":"Applied / FNC","fnc":"FNC206","mnemonic":"MIDR","name":"Random Selection of Character Strings","function":"Lấy chuỗi tại vị trí","syntax":"MIDR S1 D S2","page":11,"image":"assets/structure/fnc_206_MIDR.jpg"},{"id":"FNC207","kind":"Applied / FNC","fnc":"FNC207","mnemonic":"MIDW","name":"Random Replacement of Character Strings","function":"Thay thế chuỗi tại vị trí","syntax":"MIDW S1 D S2","page":11,"image":"assets/structure/fnc_207_MIDW.jpg"},{"id":"FNC208","kind":"Applied / FNC","fnc":"FNC208","mnemonic":"INSTR","name":"Character string search","function":"Tìm chuỗi","syntax":"INSTR S1 S2 D n","page":11,"image":"assets/structure/fnc_208_INSTR.jpg"},{"id":"FNC209","kind":"Applied / FNC","fnc":"FNC209","mnemonic":"$MOV","name":"Character String Transfer","function":"Chuyển chuỗi","syntax":"$MOV S D","page":11,"image":"assets/structure/fnc_209__MOV.jpg"},{"id":"FNC210","kind":"Applied / FNC","fnc":"FNC210","mnemonic":"FDEL","name":"Deleting Data from Tables","function":"Xóa dữ liệu khỏi bảng","syntax":"FDEL S D n","page":11,"image":"assets/structure/fnc_210_FDEL.jpg"},{"id":"FNC211","kind":"Applied / FNC","fnc":"FNC211","mnemonic":"FINS","name":"Inserting Data to Tables","function":"Chèn dữ liệu vào bảng","syntax":"FINS S D n","page":11,"image":"assets/structure/fnc_211_FINS.jpg"},{"id":"FNC212","kind":"Applied / FNC","fnc":"FNC212","mnemonic":"POP","name":"Shift Last Data Read [FILO Control]","function":"Đọc dữ liệu cuối FILO","syntax":"POP S D n","page":11,"image":"assets/structure/fnc_212_POP.jpg"},{"id":"FNC213","kind":"Applied / FNC","fnc":"FNC213","mnemonic":"SFR","name":"Bit Shift Right with Carry","function":"Dịch 16-bit phải có carry","syntax":"SFR D n","page":11,"image":"assets/structure/fnc_213_SFR.jpg"},{"id":"FNC214","kind":"Applied / FNC","fnc":"FNC214","mnemonic":"SFL","name":"Bit Shift Left with Carry","function":"Dịch 16-bit trái có carry","syntax":"SFL D n","page":11,"image":"assets/structure/fnc_214_SFL.jpg"},{"id":"FNC224","kind":"Applied / FNC","fnc":"FNC224","mnemonic":"LD=","name":"Load Compare S1 S2 =","function":"Load compare bằng","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_224_LD_.jpg"},{"id":"FNC225","kind":"Applied / FNC","fnc":"FNC225","mnemonic":"LD>","name":"Load Compare S1 S2 >","function":"Load compare lớn hơn","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_225_LD_.jpg"},{"id":"FNC226","kind":"Applied / FNC","fnc":"FNC226","mnemonic":"LD<","name":"Load Compare S1 S2 <","function":"Load compare nhỏ hơn","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_226_LD_.jpg"},{"id":"FNC228","kind":"Applied / FNC","fnc":"FNC228","mnemonic":"LD<>","name":"Load Compare ≠ S1 S2","function":"Load compare khác","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_228_LD_.jpg"},{"id":"FNC229","kind":"Applied / FNC","fnc":"FNC229","mnemonic":"LD<=","name":"Load Compare ≤ S1 S2","function":"Load compare nhỏ hơn/bằng","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_229_LD_.jpg"},{"id":"FNC230","kind":"Applied / FNC","fnc":"FNC230","mnemonic":"LD>=","name":"Load Compare ≥ S1 S2","function":"Load compare lớn hơn/bằng","syntax":"S1 S2","page":11,"image":"assets/structure/fnc_230_LD_.jpg"},{"id":"FNC232","kind":"Applied / FNC","fnc":"FNC232","mnemonic":"AND=","name":"AND Compare S1 S2 =","function":"AND compare bằng","syntax":"AND= S1 S2","page":11,"image":"assets/structure/fnc_232_AND_.jpg"},{"id":"FNC233","kind":"Applied / FNC","fnc":"FNC233","mnemonic":"AND>","name":"AND Compare S1 S2 >","function":"AND compare lớn hơn","syntax":"AND> S1 S2","page":11,"image":"assets/structure/fnc_233_AND_.jpg"},{"id":"FNC234","kind":"Applied / FNC","fnc":"FNC234","mnemonic":"AND<","name":"AND Compare S1 S2 <","function":"AND compare nhỏ hơn","syntax":"AND< S1 S2","page":12,"image":"assets/structure/fnc_234_AND_.jpg"},{"id":"FNC236","kind":"Applied / FNC","fnc":"FNC236","mnemonic":"AND<>","name":"AND Compare ≠ S1 S2","function":"AND compare khác","syntax":"AND<> S1 S2","page":12,"image":"assets/structure/fnc_236_AND_.jpg"},{"id":"FNC237","kind":"Applied / FNC","fnc":"FNC237","mnemonic":"AND<=","name":"AND Compare ≤ S1 S2","function":"AND compare nhỏ hơn/bằng","syntax":"AND<= S1 S2","page":12,"image":"assets/structure/fnc_237_AND_.jpg"},{"id":"FNC238","kind":"Applied / FNC","fnc":"FNC238","mnemonic":"AND>=","name":"AND Compare ≥ S1 S2","function":"AND compare lớn hơn/bằng","syntax":"AND>= S1 S2","page":12,"image":"assets/structure/fnc_238_AND_.jpg"},{"id":"FNC240","kind":"Applied / FNC","fnc":"FNC240","mnemonic":"OR=","name":"OR Compare S1 S2 =","function":"OR compare bằng","syntax":"OR=","page":12,"image":"assets/structure/fnc_240_OR_.jpg"},{"id":"FNC241","kind":"Applied / FNC","fnc":"FNC241","mnemonic":"OR>","name":"OR Compare S1 S2 >","function":"OR compare lớn hơn","syntax":"OR>","page":12,"image":"assets/structure/fnc_241_OR_.jpg"},{"id":"FNC242","kind":"Applied / FNC","fnc":"FNC242","mnemonic":"OR<","name":"OR Compare S1 S2 <","function":"OR compare nhỏ hơn","syntax":"OR<","page":12,"image":"assets/structure/fnc_242_OR_.jpg"},{"id":"FNC244","kind":"Applied / FNC","fnc":"FNC244","mnemonic":"OR<>","name":"OR Compare ≠ S1 S2","function":"OR compare khác","syntax":"OR<>","page":12,"image":"assets/structure/fnc_244_OR_.jpg"},{"id":"FNC245","kind":"Applied / FNC","fnc":"FNC245","mnemonic":"OR<=","name":"OR Compare ≤ S1 S2","function":"OR compare nhỏ hơn/bằng","syntax":"OR<=","page":12,"image":"assets/structure/fnc_245_OR_.jpg"},{"id":"FNC246","kind":"Applied / FNC","fnc":"FNC246","mnemonic":"OR>=","name":"OR Compare ≥ S1 S2","function":"OR compare lớn hơn/bằng","syntax":"OR>=","page":12,"image":"assets/structure/fnc_246_OR_.jpg"},{"id":"FNC256","kind":"Applied / FNC","fnc":"FNC256","mnemonic":"LIMIT","name":"Limit Control","function":"Limit control","syntax":"LIMIT S1 S2 S3 D","page":12,"image":"assets/structure/fnc_256_LIMIT.jpg"},{"id":"FNC257","kind":"Applied / FNC","fnc":"FNC257","mnemonic":"BAND","name":"Dead Band Control","function":"Dead band control","syntax":"BAND S1 S2 S3 D","page":12,"image":"assets/structure/fnc_257_BAND.jpg"},{"id":"FNC258","kind":"Applied / FNC","fnc":"FNC258","mnemonic":"ZONE","name":"Zone Control","function":"Zone control","syntax":"ZONE S1 S2 S3 D","page":12,"image":"assets/structure/fnc_258_ZONE.jpg"},{"id":"FNC259","kind":"Applied / FNC","fnc":"FNC259","mnemonic":"SCL","name":"Scaling (Coordinate by Point Data)","function":"Scaling","syntax":"SCL S1 S2 D","page":12,"image":"assets/structure/fnc_259_SCL.jpg"},{"id":"FNC260","kind":"Applied / FNC","fnc":"FNC260","mnemonic":"DABIN","name":"Decimal ASCII to BIN Conversion","function":"Decimal ASCII → BIN","syntax":"DABIN S D","page":12,"image":"assets/structure/fnc_260_DABIN.jpg"},{"id":"FNC261","kind":"Applied / FNC","fnc":"FNC261","mnemonic":"BINDA","name":"BIN to Decimal ASCII Conversion","function":"BIN → Decimal ASCII","syntax":"BINDA S D","page":12,"image":"assets/structure/fnc_261_BINDA.jpg"},{"id":"FNC269","kind":"Applied / FNC","fnc":"FNC269","mnemonic":"SCL2","name":"Scaling 2 (Coordinate by X/Y Data)","function":"Scaling 2","syntax":"SCL2 S1 S2 D","page":12,"image":"assets/structure/fnc_269_SCL2.jpg"},{"id":"FNC270","kind":"Applied / FNC","fnc":"FNC270","mnemonic":"IVCK","name":"Inverter Status Check","function":"Kiểm tra trạng thái inverter","syntax":"IVCK S1 S2 D n","page":12,"image":"assets/structure/fnc_270_IVCK.jpg"},{"id":"FNC271","kind":"Applied / FNC","fnc":"FNC271","mnemonic":"IVDR","name":"Inverter Drive","function":"Điều khiển inverter","syntax":"IVDR S1 S2 S3 n","page":13,"image":"assets/structure/fnc_271_IVDR.jpg"},{"id":"FNC272","kind":"Applied / FNC","fnc":"FNC272","mnemonic":"IVRD","name":"Inverter Parameter Read","function":"Đọc parameter inverter","syntax":"IVRD S1 S2 D n","page":13,"image":"assets/structure/fnc_272_IVRD.jpg"},{"id":"FNC273","kind":"Applied / FNC","fnc":"FNC273","mnemonic":"IVWR","name":"Inverter Parameter Write","function":"Ghi parameter inverter","syntax":"IVWR S1 S2 S3 n","page":13,"image":"assets/structure/fnc_273_IVWR.jpg"},{"id":"FNC274","kind":"Applied / FNC","fnc":"FNC274","mnemonic":"IVBWR","name":"Inverter Parameter Block Write","function":"Ghi block parameter inverter","syntax":"IVBWR S1 S2 S3 n","page":13,"image":"assets/structure/fnc_274_IVBWR.jpg"},{"id":"FNC275","kind":"Applied / FNC","fnc":"FNC275","mnemonic":"IVMC","name":"Inverter Multi Command","function":"Multi command inverter","syntax":"IVMC S1 S2 S3 D n","page":13,"image":"assets/structure/fnc_275_IVMC.jpg"},{"id":"FNC276","kind":"Applied / FNC","fnc":"FNC276","mnemonic":"ADPRW","name":"MODBUS Read / Write","function":"MODBUS read/write","syntax":"ADPRW S S1 S2 S3 S4/D","page":13,"image":"assets/structure/fnc_276_ADPRW.jpg"},{"id":"FNC278","kind":"Applied / FNC","fnc":"FNC278","mnemonic":"RBFM","name":"Divided BFM Read","function":"Divided BFM read","syntax":"RBFM m1 m2 D n1 n2","page":13,"image":"assets/structure/fnc_278_RBFM.jpg"},{"id":"FNC279","kind":"Applied / FNC","fnc":"FNC279","mnemonic":"WBFM","name":"Divided BFM Write","function":"Divided BFM write","syntax":"WBFM m1 m2 S n1 n2","page":13,"image":"assets/structure/fnc_279_WBFM.jpg"},{"id":"FNC280","kind":"Applied / FNC","fnc":"FNC280","mnemonic":"HSCT","name":"High-speed Counter Compare With Data Table","function":"High-speed counter compare with data table","syntax":"HSCT S1 m S2 D n","page":13,"image":"assets/structure/fnc_280_HSCT.jpg"},{"id":"FNC290","kind":"Applied / FNC","fnc":"FNC290","mnemonic":"LOADR","name":"Load From ER","function":"Load from ER","syntax":"LOADR S n","page":13,"image":"assets/structure/fnc_290_LOADR.jpg"},{"id":"FNC291","kind":"Applied / FNC","fnc":"FNC291","mnemonic":"SAVER","name":"Save to ER","function":"Save to ER","syntax":"SAVER S m D","page":13,"image":"assets/structure/fnc_291_SAVER.jpg"},{"id":"FNC292","kind":"Applied / FNC","fnc":"FNC292","mnemonic":"INITR","name":"Initialize R and ER","function":"Initialize R và ER","syntax":"INITR S n","page":13,"image":"assets/structure/fnc_292_INITR.jpg"},{"id":"FNC293","kind":"Applied / FNC","fnc":"FNC293","mnemonic":"LOGR","name":"Logging R and ER","function":"Logging R và ER","syntax":"LOGR S m D1 n D2","page":13,"image":"assets/structure/fnc_293_LOGR.jpg"},{"id":"FNC294","kind":"Applied / FNC","fnc":"FNC294","mnemonic":"RWER","name":"Rewrite to ER","function":"Rewrite to ER","syntax":"RWER S n","page":13,"image":"assets/structure/fnc_294_RWER.jpg"},{"id":"FNC295","kind":"Applied / FNC","fnc":"FNC295","mnemonic":"INITER","name":"Initialize ER","function":"Initialize ER","syntax":"INITER S n","page":13,"image":"assets/structure/fnc_295_INITER.jpg"},{"id":"FNC300","kind":"Applied / FNC","fnc":"FNC300","mnemonic":"FLCRT","name":"File create / check","function":"Tạo/kiểm tra file","syntax":"FLCRT S1 S2 S3 n","page":13,"image":"assets/structure/fnc_300_FLCRT.jpg"},{"id":"FNC301","kind":"Applied / FNC","fnc":"FNC301","mnemonic":"FLDEL","name":"File delete / CF card format","function":"Xóa file/format CF card","syntax":"FLDEL S1 S2 n","page":13,"image":"assets/structure/fnc_301_FLDEL.jpg"},{"id":"FNC302","kind":"Applied / FNC","fnc":"FNC302","mnemonic":"FLWR","name":"Data write","function":"Ghi dữ liệu","syntax":"FLWR S1 S2 S3 D n","page":13,"image":"assets/structure/fnc_302_FLWR.jpg"},{"id":"FNC303","kind":"Applied / FNC","fnc":"FNC303","mnemonic":"FLRD","name":"Data read","function":"Đọc dữ liệu","syntax":"FLRD S1 S2 D1 D2 n","page":13,"image":"assets/structure/fnc_303_FLRD.jpg"},{"id":"FNC304","kind":"Applied / FNC","fnc":"FNC304","mnemonic":"FLCMD","name":"FX3U-CF-ADP command","function":"Lệnh FX3U-CF-ADP","syntax":"FLCMD S n","page":13,"image":"assets/structure/fnc_304_FLCMD.jpg"},{"id":"FNC305","kind":"Applied / FNC","fnc":"FNC305","mnemonic":"FLSTRD","name":"FX3U-CF-ADP status read","function":"Đọc trạng thái FX3U-CF-ADP","syntax":"FLSTRD S D n","page":13,"image":"assets/structure/fnc_305_FLSTRD.jpg"}];
+
+function structurePage(){
+  const groups=[...new Set(sourceStructure.map(x=>x.kind))];
+  return layout("🧱 Cấu trúc lệnh",`
+    <div class="structure-intro">
+      <h2>Cấu trúc lệnh — lấy trực tiếp từ tài liệu nguồn</h2>
+      <p>
+        Mục này tổng hợp các lệnh và cấu trúc/symbol được thể hiện trong tài liệu
+        <b>FX3S/FX3G/FX3GC/FX3U/FX3UC Series — Programming Manual - Basic & Applied Instruction Edition</b>.
+        Mỗi mục có hình minh họa được cắt trực tiếp từ bảng lệnh trong PDF.
+      </p>
+      <p class="source-note">
+        Lưu ý: file nguồn này là phần <b>Instruction List</b>, nên hình minh họa là symbol/cấu trúc lệnh trong bảng tài liệu;
+        đây không phải là ví dụ ứng dụng hoàn chỉnh cho từng lệnh.
+      </p>
     </div>
-  </div>
-  <div class="control-card">
-    <div class="status"><i></i> SYSTEM ONLINE</div>
-    <div class="display">AUTO</div>
-    <div class="io"><span>X0</span><b>●</b><span>Y0</span><b class="on">●</b></div>
-    <div class="io"><span>X1</span><b>●</b><span>Y1</span><b>●</b></div>
-    <div class="scan">SCAN TIME <strong>0.8 ms</strong></div>
-  </div>
-</section>
 
-<section id="skills" class="section">
-  <div class="section-title"><p>01 / SKILLS</p><h2>Kỹ năng kỹ thuật</h2></div>
-  <div class="cards">
-    <article><span class="icon">▣</span><h3>PLC Mitsubishi</h3><p>FX3S, FX3U, FX series. Ladder, I/O, Timer, Counter, M, S, D và các lệnh điều khiển.</p></article>
-    <article><span class="icon">⌁</span><h3>Điện & cảm biến</h3><p>PNP/NPN, 2 dây/3 dây, relay, nguồn 24VDC, đấu nối I/O và xử lý tín hiệu.</p></article>
-    <article><span class="icon">◉</span><h3>Machine Vision</h3><p>Camera công nghiệp, Keyence CCD, kiểm tra ngoại quan và xử lý hình ảnh.</p></article>
-    <article><span class="icon">↗</span><h3>Điều khiển máy</h3><p>Sequence, interlock, timer/counter, alarm, servo và logic vận hành máy.</p></article>
-  </div>
-</section>
-
-<section id="knowledge" class="section dark">
-  <div class="section-title"><p>02 / KNOWLEDGE</p><h2>Kiến thức PLC</h2></div>
-  <div class="topics">
-    <a href="#"><b>01</b><span>Timer & Counter</span><small>T0, T1, C0...</small></a>
-    <a href="#"><b>02</b><span>Relay nội M</span><small>M0, M10, M8013...</small></a>
-    <a href="#"><b>03</b><span>State Relay</span><small>S0, S10, STL</small></a>
-    <a href="#"><b>04</b><span>Thanh ghi D</span><small>D0, MOV, ADD...</small></a>
-    <a href="#"><b>05</b><span>I/O & đấu dây</span><small>X, Y, COM, SS</small></a>
-    <a href="#"><b>06</b><span>Ladder Logic</span><small>SET, RST, INV...</small></a>
-  </div>
-</section>
-
-<section id="projects" class="section">
-  <div class="section-title"><p>03 / PROJECTS</p><h2>Dự án thực hành</h2></div>
-  <div class="project-grid">
-    <article class="project"><span>PLC 01</span><h3>Điều khiển 4 đèn tuần tự</h3><p>START / STOP • Delay • Timer • Sequence</p></article>
-    <article class="project"><span>PLC 02</span><h3>Nhấn nút 2 lần trong 5 giây</h3><p>One-shot • Timer • Counter • Reset</p></article>
-    <article class="project"><span>VISION 01</span><h3>Kiểm tra sản phẩm bằng camera</h3><p>Trigger • Inspection • OK/NG • PLC I/O</p></article>
-  </div>
-</section>
-
-<section id="about" class="section about">
-  <div class="about-box">
-    <div>
-      <p class="eyebrow">ABOUT ME</p>
-      <h2>Kỹ thuật viên<br><span>Tự động hóa</span></h2>
+    <div class="structure-toolbar">
+      <input id="structureSearch" placeholder="Tìm LD, MOV, FNC20, ADD, Timer...">
+      <select id="structureGroup">
+        <option value="">Tất cả nhóm</option>
+        ${groups.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join("")}
+      </select>
+      <select id="structureLimit">
+        <option value="all">Tất cả</option>
+        <option value="25">25</option>
+        <option value="50">50</option>
+        <option value="100">100</option>
+      </select>
     </div>
-    <p>Đây là không gian cá nhân để lưu trữ, học tập và chia sẻ những kiến thức thực tế về PLC, điện công nghiệp, cảm biến, điều khiển máy và Machine Vision.</p>
+    <div id="structureSummary" class="dict-summary"></div>
+    <div id="structureList" class="structure-list"></div>
+  `);
+}
+
+function renderStructure(){
+  const q=(document.getElementById("structureSearch")?.value||"").toLowerCase().trim();
+  const g=document.getElementById("structureGroup")?.value||"";
+  const lim=document.getElementById("structureLimit")?.value||"all";
+  let arr=sourceStructure.filter(x=>{
+    const hay=[x.fnc,x.mnemonic,x.name,x.function,x.syntax,x.kind].join(" ").toLowerCase();
+    return (!q || hay.includes(q)) && (!g || x.kind===g);
+  });
+  const total=arr.length;
+  if(lim!=="all") arr=arr.slice(0,Number(lim));
+  const sum=document.getElementById("structureSummary");
+  if(sum) sum.textContent=`Hiển thị ${arr.length} / ${total} mục`;
+  const list=document.getElementById("structureList");
+  if(!list) return;
+  list.innerHTML=arr.map((x,i)=>`
+    <article class="structure-card">
+      <div class="structure-card-head">
+        <div>
+          <span class="structure-kind">${esc(x.kind)}</span>
+          ${x.fnc?`<span class="structure-fnc">${esc(x.fnc)}</span>`:""}
+          <h3>${esc(x.mnemonic)} <small>${esc(x.name)}</small></h3>
+        </div>
+        <span class="structure-page">PDF trang ${x.page}</span>
+      </div>
+
+      <div class="structure-grid">
+        <div class="structure-info">
+          <div class="structure-label">Cấu trúc trong tài liệu</div>
+          <pre class="structure-code">${esc(x.syntax)}</pre>
+
+          <div class="structure-label">Chức năng</div>
+          <p>${esc(x.function)}</p>
+
+          <div class="structure-label">Nguồn hình</div>
+          <p>Hình được lấy trực tiếp từ bảng Instruction List trong PDF, trang ${x.page}.</p>
+        </div>
+
+        <figure class="structure-figure">
+          <img src="${esc(x.image)}" loading="lazy" alt="Cấu trúc lệnh ${esc(x.mnemonic)} từ PDF">
+          <figcaption>${esc(x.fnc||x.mnemonic)} — hình minh họa từ tài liệu</figcaption>
+        </figure>
+      </div>
+    </article>
+  `).join("") || `<div class="empty-state">Không tìm thấy lệnh phù hợp.</div>`;
+
+}
+
+function bindStructureFilters(){
+  document.getElementById("structureSearch")?.addEventListener("input",renderStructure);
+  document.getElementById("structureGroup")?.addEventListener("change",renderStructure);
+  document.getElementById("structureLimit")?.addEventListener("change",renderStructure);
+}
+
+function show(page){
+let a=document.getElementById("app"), html="";
+if(page==="structure"){
+  html=structurePage();
+} else if(page==="home"){
+html=`<div class="hero"><h1>PLC Knowledge</h1><p>Kho kiến thức PLC tiếng Việt — tập trung Mitsubishi FX, Ladder, Device, Timer/Counter, thanh ghi, lệnh FNC, đấu dây, HMI và bài tập thực tế.</p><div class="tag">Mitsubishi FX</div><div class="tag">GX Works2</div><div class="tag">Ladder</div><div class="tag">Automation</div></div>
+<div class="section"><h2>Học theo lộ trình</h2>${cards(sections.slice(1,8).map(x=>[x[0],x[1],"Mở chuyên mục"]))}</div>
+<div class="section"><h2>Tra cứu nhanh</h2><div class="grid"><div class="card" onclick="show('dictionary')"><h3>📚 Instruction Dictionary</h3><p>Tra cứu FNC/mnemonic và mở trang chi tiết.</p></div>
+<div class="card" onclick="show('practice')"><h3>🎓 Học qua ví dụ</h3><p>Ví dụ Ladder từng bước, kết quả và cách debug.</p></div>
+<div class="card" onclick="show('devices')"><h3>🧠 Device</h3><p>X Y M S T C D R Z/V P K H</p></div>
+<div class="card" onclick="show('basic')"><h3>⚡ Instructions</h3><p>LD · AND · OR · SET · RST · MOV · CMP...</p></div>
+<div class="card" onclick="show('practice')"><h3>🧪 Bài tập</h3><p>${practices.length} bài từ cơ bản đến máy thực tế</p></div>
+<div class="card" onclick="show('trouble')"><h3>🛠 Debug</h3><p>PLC STOP, Input/Output, Timer, Counter...</p></div>
+</div></div>`;
+}else if(page==="roadmap") html=layout("🧭 Lộ trình học PLC",`<div class="notice">Nên học theo năng lực: logic → timer/counter → dữ liệu → sequence → ứng dụng máy → high-speed/communication.</div><ol>${["PLC, scan cycle và I/O","X/Y và đấu dây","M relay","LD/LDI/AND/OR/OUT","SET/RST/PLS/PLF","Timer","Counter","Ladder patterns: self-hold, interlock, toggle","S/STL/RET","D register và K/H","MOV/CMP/ZCP","ADD/SUB/MUL/DIV","Bit/Word và 16/32 bit","Index Z/V","Applied/FNC","High-speed & pulse","Positioning/servo/stepper","RTC/PID/analog","Communication","HMI","Debug và thiết kế máy"].map(x=>`<li>${x}</li>`).join("")}</ol>`);
+else if(page==="foundation") html=layout("📚 Nền tảng PLC",`
+${standardTopic("PLC là gì và PLC hoạt động như thế nào","Hiểu PLC nhận tín hiệu, xử lý chương trình và điều khiển output theo chu kỳ quét.","PLC gồm CPU, nguồn, input, output và vùng nhớ. CPU đọc trạng thái input, thực hiện chương trình Ladder rồi cập nhật output. Người mới cần phân biệt rõ tín hiệu vật lý X/Y với bit nội M và thanh ghi D.",
+`<div class="lesson-image"><div class="lesson-image-title"><b>Chu kỳ quét PLC</b><span>Input → Program → Output</span></div><svg viewBox="0 0 1100 260" class="lesson-svg"><rect width="1100" height="260" fill="#fff"/><text x="120" y="100" font-size="25">Đọc Input</text><text x="430" y="100" font-size="25">Chạy Ladder</text><text x="760" y="100" font-size="25">Cập nhật Output</text><path d="M280 90H400M590 90H720" stroke="#111" stroke-width="3"/><path d="M900 145C700 230 350 230 160 145" fill="none" stroke="#555" stroke-width="3"/><text x="430" y="205" font-size="18">Lặp lại liên tục</text></svg></div>`,
+`LD X0
+OUT Y0`,
+["LD X0: lấy trạng thái input X0 làm điều kiện.","OUT Y0: nếu rung đang TRUE thì output Y0 được điều khiển ON.","Sau khi chương trình được xử lý, PLC cập nhật output theo kết quả chương trình."],
+"X0 ON → rung TRUE → Y0 ON. X0 OFF → rung FALSE → Y0 OFF.",
+["Học nền tảng trước khi học FNC.","Dùng Monitor để xem X/M/Y/T/C/D khi debug."],
+["Nhầm X với M hoặc D.","Không hiểu scan cycle nên đánh giá sai trạng thái output.","Có nhiều network cùng tác động một Y."],
+"Viết chương trình X0 điều khiển Y0. Sau đó thêm X1 làm điều kiện AND và quan sát Monitor."
+)}
+<div class="learning-section"><h3>9. Lộ trình nền tảng</h3><ol class="step-list"><li>Input/Output</li><li>Device</li><li>Scan cycle</li><li>NO/NC</li><li>AND/OR</li><li>Timer/Counter</li><li>Register</li><li>FNC</li></ol></div>
+`)
+else if(page==="wiring") html=layout("🔌 Đấu dây & NPN/PNP",`
+${standardTopic("Đấu dây Input PLC và phân biệt NPN/PNP","Có thể xác định đúng nguồn, COM/SS và kiểu tín hiệu trước khi cấp điện cho PLC.","Trình tự an toàn: xác định 24V/0V → xác định nhóm COM/SS → xem datasheet sensor → xác định NPN/PNP → đo OFF/ON → kiểm tra LED input. Không kết luận chỉ bằng màu dây.",
+`<div class="lesson-image"><div class="lesson-image-title"><b>NPN / PNP</b><span>Nguyên lý tín hiệu</span></div><svg viewBox="0 0 1100 310" class="lesson-svg"><rect width="1100" height="310" fill="#fff"/><text x="130" y="45" font-size="23" font-weight="700">NPN</text><text x="650" y="45" font-size="23" font-weight="700">PNP</text><text x="110" y="95" font-size="18">Sensor kéo tín hiệu về 0V</text><text x="610" y="95" font-size="18">Sensor cấp tín hiệu +24V</text><line x1="180" y1="130" x2="180" y2="230" stroke="#111" stroke-width="3"/><line x1="680" y1="130" x2="680" y2="230" stroke="#111" stroke-width="3"/><text x="135" y="270" font-size="17">OUT → 0V khi ON</text><text x="635" y="270" font-size="17">OUT → +24V khi ON</text></svg></div>`,
+`+24V → Sensor
+0V   → Sensor
+OUT  → Input PLC
+COM/SS → nguồn phù hợp với nhóm input`,
+["Nguồn sensor phải đúng điện áp.","OUT là dây tín hiệu, không mặc định là +24V hay 0V.","COM/SS quyết định cách mạch input tham chiếu tín hiệu."],
+"Sensor ON → điện áp tại input thay đổi đúng mức → LED X tương ứng sáng → chương trình đọc được X=ON.",
+["Cảm biến 3 dây.","Công tắc, nút nhấn.","Kiểm tra input PLC trước khi chạy máy."],
+["Đấu ngược NPN/PNP.","Đo nhầm dây nguồn thành dây OUT.","Quên kiểm tra COM/SS.","Cấp sai 24V/0V."],
+"Cho một sensor 3 dây bất kỳ: xác định V+, 0V, OUT; đo OUT khi OFF và ON; kết luận kiểu NPN/PNP và giải thích vì sao."
+)}
+<div class="learning-section"><h3>9. Checklist trước khi cấp điện</h3><ol class="step-list"><li>Đọc sơ đồ terminal.</li><li>Kiểm tra cực tính.</li><li>Đo nguồn bằng đồng hồ.</li><li>Kiểm tra COM/SS.</li><li>Cấp nguồn rồi kiểm tra LED input.</li></ol></div>
+`)
+else if(page==="devices") html=layout("🧠 Device Mitsubishi FX",`
+<div class="topic-hero"><h2>Device Mitsubishi FX</h2><p><b>Mục tiêu:</b> biết mỗi device dùng để làm gì, đọc/ghi ở đâu và chọn đúng device khi lập trình.</p></div>
+<div class="learning-section"><h3>1. Bảng device cốt lõi</h3>
+<table><tr><th>Device</th><th>Ý nghĩa</th><th>Ứng dụng</th></tr>
+<tr><td><b>X</b></td><td>Input</td><td>Nút nhấn, sensor</td></tr>
+<tr><td><b>Y</b></td><td>Output</td><td>Đèn, van, relay, contactor</td></tr>
+<tr><td><b>M</b></td><td>Auxiliary relay</td><td>Bit trung gian, cờ trạng thái</td></tr>
+<tr><td><b>S</b></td><td>State relay</td><td>Sequence/step</td></tr>
+<tr><td><b>T</b></td><td>Timer</td><td>Trễ thời gian</td></tr>
+<tr><td><b>C</b></td><td>Counter</td><td>Đếm sự kiện</td></tr>
+<tr><td><b>D</b></td><td>Data register</td><td>Số liệu, setpoint, kết quả</td></tr>
+<tr><td><b>R</b></td><td>File register</td><td>Dữ liệu mở rộng tùy model</td></tr>
+</table></div>
+<div class="learning-section"><h3>2. Hình minh họa luồng dữ liệu</h3>
+<div class="lesson-image"><div class="lesson-image-title"><b>Input → M → Output</b><span>Ví dụ device</span></div><svg viewBox="0 0 1100 240" class="lesson-svg"><rect width="1100" height="240" fill="#fff"/><text x="100" y="105" font-size="28">X0</text><text x="430" y="105" font-size="28">M0</text><text x="760" y="105" font-size="28">Y0</text><path d="M170 95H380M500 95H710" stroke="#111" stroke-width="4"/><text x="100" y="150" font-size="17">Input</text><text x="410" y="150" font-size="17">Bit trung gian</text><text x="740" y="150" font-size="17">Output</text></svg></div></div>
+${standardTopic("Chọn device đúng","Biết khi nào dùng X/Y/M/S/T/C/D.","X/Y đại diện I/O vật lý; M/S là bit logic; T/C chứa trạng thái và giá trị liên quan timer/counter; D dùng cho dữ liệu số.","",
+`LD X0
+OUT M0
+LD M0
+OUT Y0`,
+["X0 nhận tín hiệu vật lý.","M0 lưu trạng thái trung gian.","Y0 lấy M0 làm điều kiện để điều khiển output."],
+"X0 ON → M0 ON → Y0 ON.",
+["Tách logic máy khỏi input vật lý bằng M.","Dùng S cho sequence.","D dùng setpoint và kết quả."],
+["Dùng Y làm bit trung gian không cần thiết.","Dùng M cho dữ liệu số.","Dùng device không được model hỗ trợ."],
+"Tạo mạch X0 → M0 → Y0; sau đó thêm X1 reset logic và theo dõi từng device bằng Monitor."
+)}
+`)
+else if(page==="basic") html=layout("⚡ Basic Instructions",`
+<div class="topic-hero"><h2>Basic Instructions</h2><p><b>Mục tiêu:</b> hiểu nhóm lệnh nền tảng trước khi đi vào FNC.</p></div>
+<div class="learning-section"><h3>1. Cách học một lệnh Basic</h3><p>Với mỗi lệnh, luôn trả lời 6 câu hỏi: lệnh làm gì? điều kiện kích hoạt là gì? device nào làm source/destination? kết quả ở đâu? giữ trạng thái hay chỉ một scan? ứng dụng thực tế là gì?</p></div>
+<div class="grid">${instructions.filter(i=>i[1]==="Basic").map((i,idx)=>{let r=richExamples[i[0]];return `<div class="card" onclick="show('ins-${idx}')"><h3>${r?r.title:i[0]}</h3><p>${i[3]}</p><pre>${esc(r?r.syntax:i[2])}</pre>${r?`<b>Kết quả:</b> ${r.result}`:""}<p><b>Học theo:</b> chức năng → cú pháp → Ladder → giải thích → ứng dụng.</p></div>`}).join("")}</div>
+<div class="learning-section"><h3>2. Bài thực hành tổng hợp</h3><pre class="code-box">LD X0
+AND X1
+OUT Y0
+
+LD X2
+SET Y1
+
+LD X3
+RST Y1</pre><p>Hãy xác định trạng thái Y0/Y1 cho từng tổ hợp input và giải thích vì sao SET khác OUT.</p></div>
+`)
+else if(page==="timers") html=layout("⏱ Timer & Counter",`
+<div class="topic-hero"><h2>Timer & Counter</h2><p><b>Mục tiêu:</b> biết timer tạo trễ như thế nào, counter đếm như thế nào và cách reset/monitor chúng.</p></div>
+<div class="learning-section"><h3>1. Timer</h3><p>Timer dùng để tạo điều kiện sau một khoảng thời gian. Khi rung cấp điều kiện cho timer, timer bắt đầu đếm theo time base của loại timer/model.</p>
+${ladderLessonSvg("and","Timer: X0 → T0 → Y0")}
+<pre class="code-box">LD X0
+OUT T0 K50
+LD T0
+OUT Y0</pre>
+<ol class="step-list"><li>X0 ON → T0 bắt đầu đếm.</li><li>K50 là preset; thời gian thực tế phụ thuộc time base của T0.</li><li>T0 hoàn tất → tiếp điểm T0 TRUE.</li><li>Y0 ON.</li></ol></div>
+<div class="learning-section"><h3>2. Counter</h3>
+<div class="lesson-image"><div class="lesson-image-title"><b>Counter</b><span>Xung → C0</span></div><svg viewBox="0 0 1100 240" class="lesson-svg"><rect width="1100" height="240" fill="#fff"/><text x="120" y="100" font-size="24">X0</text><path d="M190 90H380" stroke="#111" stroke-width="3"/><text x="410" y="100" font-size="24">C0 K5</text><path d="M590 90H770" stroke="#111" stroke-width="3"/><text x="800" y="100" font-size="24">Y0</text><text x="400" y="160" font-size="17">Đếm đủ 5 xung → C0 ON</text></svg></div>
+<pre class="code-box">LD X0
+OUT C0 K5
+
+LD C0
+OUT Y0
+
+LD X1
+RST C0</pre>
+<ol class="step-list"><li>Mỗi sự kiện phù hợp tại X0 làm counter tăng theo cách counter hỗ trợ.</li><li>Đạt preset K5 → C0 TRUE.</li><li>C0 điều khiển Y0.</li><li>X1 reset C0.</li></ol></div>
+<div class="learning-section"><h3>3. Lỗi thường gặp</h3><div class="error-box"><ul><li>Tính sai thời gian vì quên time base.</li><li>Không reset timer/counter đúng điều kiện.</li><li>Cho tín hiệu nhiễu vào counter mà không xử lý cạnh.</li><li>Dùng chung T/C cho nhiều mục đích.</li></ul></div></div>
+<div class="practice-box"><b>Bài tập:</b> Nhấn X0 5 lần → Y0 sáng. Nhấn X1 → reset để hệ thống sẵn sàng đếm lại.</div>
+`)
+else if(page==="ladder") html=layout("🪜 Ladder Logic",`
+<p>Ladder Logic là cách biểu diễn chương trình PLC giống mạch điều khiển relay. Phần này đi từ logic cơ bản đến các cấu trúc thường dùng khi lập trình máy.</p>
+<div class="notice"><b>📌 Cách học:</b> đọc sơ đồ → xác định điều kiện ON/OFF → theo dõi PLC quét từ trên xuống dưới → kiểm tra device bằng Monitor.</div>
+
+<div class="lesson">
+ <div class="lesson-head"><h3>1. AND — Hai điều kiện phải cùng ON</h3><p>X0 và X1 cùng ON thì Y0 ON.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("and","AND: X0 AND X1 → Y0")}
+  <div class="lesson-grid">
+   <div class="lesson-box"><b>X0</b><br>Nút/cảm biến thứ nhất. Phải ON để dòng logic đi qua.</div>
+   <div class="lesson-box"><b>X1</b><br>Điều kiện thứ hai. Cũng phải ON.</div>
+   <div class="lesson-box"><b>Y0</b><br>Output chỉ ON khi cả X0 và X1 đều ON.</div>
+   <div class="lesson-box"><b>Logic</b><br><code>Y0 = X0 AND X1</code></div>
   </div>
-</section>
+  <h4>Chương trình Mitsubishi FX</h4>
+  <pre class="lesson-code">LD X0
+AND X1
+OUT Y0</pre>
+  <h4>Trình tự hoạt động</h4><ol><li>X0 OFF → Y0 OFF.</li><li>X0 ON nhưng X1 OFF → Y0 vẫn OFF.</li><li>X0 ON + X1 ON → Y0 ON.</li><li>Một trong hai OFF → Y0 OFF.</li></ol>
+  <h4>Ứng dụng</h4><p>Hai điều kiện an toàn, cảm biến sản phẩm + điều kiện máy, Start + cho phép chạy...</p>
+  <h4>Lỗi thường gặp</h4><p>Đấu nhầm tiếp điểm NO/NC hoặc nhầm AND với OR.</p>
+ </div>
+</div>
 
-<section class="contact">
-  <p class="eyebrow">CONTACT</p>
-  <h2>Cùng trao đổi về kỹ thuật</h2>
-  <p>Facebook • TikTok • Email • GitHub</p>
-  <a class="btn primary" href="mailto:your@email.com">Liên hệ →</a>
-</section>
-</main>
+<div class="lesson">
+ <div class="lesson-head"><h3>2. OR — Chỉ cần một điều kiện ON</h3><p>X0 hoặc X1 ON thì Y0 ON.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("or","OR: X0 OR X1 → Y0")}
+  <div class="lesson-grid"><div class="lesson-box"><b>Nhánh trên</b><br>X0 là một đường điều khiển.</div><div class="lesson-box"><b>Nhánh dưới</b><br>X1 là đường điều khiển thứ hai.</div><div class="lesson-box"><b>Y0</b><br>ON nếu ít nhất một nhánh đúng.</div><div class="lesson-box"><b>Logic</b><br><code>Y0 = X0 OR X1</code></div></div>
+  <h4>Chương trình</h4><pre class="lesson-code">LD X0
+OR X1
+OUT Y0</pre>
+  <h4>Trình tự</h4><ol><li>Cả hai OFF → Y0 OFF.</li><li>X0 ON → Y0 ON.</li><li>X0 OFF nhưng X1 ON → Y0 vẫn ON.</li><li>Cả hai OFF → Y0 OFF.</li></ol>
+  <h4>Ứng dụng</h4><p>Điều khiển từ hai nút, hai cảm biến, hai điều kiện cho phép máy chạy.</p>
+ </div>
+</div>
 
-<footer>© 2026 PLC ENGINEER — Industrial Automation</footer>
-<script src="script.js"></script>
-</body>
-</html>
+<div class="lesson">
+ <div class="lesson-head"><h3>3. Self-hold — Mạch tự giữ</h3><p>Nhấn START một lần, Y0 tiếp tục ON cho đến khi nhấn STOP.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("hold","Self-hold: START + Y0 giữ + STOP")}
+  <h4>Chương trình</h4><pre class="lesson-code">LDI X1
+AND X0
+OR Y0
+OUT Y0</pre>
+  <h4>Giải thích từng phần</h4><ol><li><b>X1 STOP</b> dùng tiếp điểm thường đóng: bình thường cho phép mạch chạy.</li><li><b>X0 START</b> là nút nhấn khởi động.</li><li><b>Y0</b> mắc song song X0 để tự giữ sau khi nhả START.</li><li>Khi X1 STOP tác động, mạch bị ngắt và Y0 OFF.</li></ol>
+  <h4>Trình tự hoạt động</h4><ol><li>Ban đầu X1 chưa nhấn, Y0 OFF.</li><li>Nhấn X0 → Y0 ON.</li><li>Nhả X0 → tiếp điểm Y0 vẫn duy trì mạch → Y0 tiếp tục ON.</li><li>Nhấn X1 → mạch hở → Y0 OFF.</li></ol>
+  <h4>Ứng dụng</h4><p>Motor, bơm, quạt, van điện, contactor và hầu hết mạch START/STOP.</p>
+  <h4>Lỗi thường gặp</h4><p>Đặt tiếp điểm giữ sai vị trí hoặc có network khác ghi OUT Y0 làm Y0 bị tắt lại.</p>
+ </div>
+</div>
+
+<div class="lesson">
+ <div class="lesson-head"><h3>4. Interlock — Khóa chéo hai output</h3><p>Y0 và Y1 không được phép ON đồng thời.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("interlock","Interlock: Y0 ↔ Y1")}
+  <h4>Chương trình</h4><pre class="lesson-code">LD X0
+ANI Y1
+OUT Y0
+
+LD X1
+ANI Y0
+OUT Y1</pre>
+  <h4>Giải thích</h4><ol><li>X0 yêu cầu Y0 ON nhưng phải kiểm tra Y1 đang OFF.</li><li>X1 yêu cầu Y1 ON nhưng phải kiểm tra Y0 đang OFF.</li><li>Nếu Y0 đang ON thì nhánh Y1 bị khóa.</li><li>Nếu Y1 đang ON thì nhánh Y0 bị khóa.</li></ol>
+  <h4>Ứng dụng</h4><p>Thuận/nghịch motor, nâng/hạ, mở/đóng van, hai contactor không được đóng cùng lúc.</p>
+  <div class="notice"><b>⚠️ An toàn:</b> với contactor/motor đảo chiều, nên có cả interlock phần cứng; không chỉ dựa vào PLC.</div>
+ </div>
+</div>
+
+<div class="lesson">
+ <div class="lesson-head"><h3>5. Toggle — Mỗi lần nhấn đổi trạng thái</h3><p>Lần 1 ON, lần 2 OFF, lần 3 ON...</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("toggle","Toggle: mỗi lần nhấn đảo trạng thái")}
+  <h4>Cách đơn giản trên Mitsubishi FX</h4><pre class="lesson-code">LD X0
+ALT Y0</pre>
+  <h4>Giải thích</h4><ol><li>PLC nhận một lần kích hoạt X0.</li><li>ALT đảo trạng thái của Y0.</li><li>Y0 OFF → ON.</li><li>Lần kích hoạt tiếp theo: Y0 ON → OFF.</li></ol>
+  <h4>Điểm quan trọng</h4><p>Phải hiểu cơ chế kích hoạt của ALT để không làm Y0 đảo liên tục khi giữ nút. Nếu yêu cầu chống dội/phát hiện cạnh cụ thể, có thể dùng PLS/MEP kết hợp M bit.</p>
+  <h4>Ứng dụng</h4><p>Nút bật/tắt đèn, chế độ Auto/Manual, bật/tắt chức năng trên HMI.</p>
+ </div>
+</div>
+
+<div class="lesson">
+ <div class="lesson-head"><h3>6. One-shot — Chỉ tạo xung một scan</h3><p>Nhấn/ON X0 → M0 chỉ ON trong một chu kỳ quét.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("oneshot","One-shot: PLS M0")}
+  <h4>Chương trình</h4><pre class="lesson-code">LD X0
+PLS M0</pre>
+  <h4>Giải thích</h4><ol><li>X0 chuyển OFF → ON.</li><li>PLS tạo xung tại M0.</li><li>M0 chỉ ON trong một scan.</li><li>Nếu X0 vẫn giữ ON, M0 không tiếp tục ON ở các scan sau.</li></ol>
+  <h4>Ứng dụng</h4><p>Tăng counter một lần cho mỗi lần nhấn, trigger một chuỗi, ghi dữ liệu một lần, phát lệnh cho máy.</p>
+  <h4>PLS khác giữ ON như thế nào?</h4><p>Tiếp điểm X0 có thể giữ ON nhiều scan, nhưng M0 sau PLS chỉ tạo một xung nên rất hữu ích khi cần xử lý sự kiện “một lần”.</p>
+ </div>
+</div>
+
+<div class="lesson">
+ <div class="lesson-head"><h3>7. Sequence — Chia máy thành các bước</h3><p>Dùng State Relay S + STL/RET để tổ chức máy theo từng trạng thái.</p></div>
+ <div class="lesson-body">
+  ${ladderLessonSvg("sequence","Sequence: S0 → S10 → S20 ...")}
+  <h4>Ý tưởng</h4><p>Thay vì viết một network rất dài, chia máy thành các trạng thái: chờ → kẹp → chạy → nhả → kết thúc.</p>
+  <h4>Ví dụ cơ bản</h4><pre class="lesson-code">LD X0
+SET S10
+
+STL S10
+OUT Y0
+LD X1
+SET S20
+RET
+
+STL S20
+OUT Y1
+RET</pre>
+  <h4>Giải thích từng bước</h4><ol><li><b>S0 / trạng thái ban đầu:</b> chờ điều kiện Start.</li><li><b>S10:</b> máy thực hiện công việc 1, ví dụ bật Y0.</li><li>Khi X1 xác nhận công việc 1 hoàn tất → chuyển sang S20.</li><li><b>S20:</b> thực hiện công việc 2, ví dụ bật Y1.</li><li>Có thể tiếp tục S30, S40... tùy quy trình.</li></ol>
+  <h4>Ứng dụng</h4><p>Máy gắp đặt, máy ép, máy bơm, máy cấp phôi, máy dán keo, máy kiểm tra CCD...</p>
+  <h4>Lợi ích</h4><p>Dễ đọc, dễ debug và dễ tìm xem máy đang đứng ở bước nào.</p>
+ </div>
+</div>
+
+<h2>📌 Thứ tự nên học</h2>
+<ol><li>AND / OR</li><li>NO / NC và logic đảo</li><li>Self-hold</li><li>Interlock</li><li>Timer / Counter</li><li>One-shot</li><li>SET / RST</li><li>Toggle</li><li>Sequence với S + STL/RET</li><li>Sau đó mới đi sâu vào FNC, positioning, PID, communication.</li></ol>
+`);
+
+
+else if(page==="register") html=layout("🔢 Register & Data",`
+<div class="topic-hero"><h2>Register & Data</h2><p><b>Mục tiêu:</b> hiểu D register, hằng số K/H, dữ liệu 16/32 bit và luồng dữ liệu giữa các thanh ghi.</p></div>
+<div class="learning-section"><h3>1. D register</h3><p>D là vùng nhớ dữ liệu. Dùng để lưu setpoint, giá trị cảm biến, kết quả phép toán, giá trị HMI...</p>
+<pre class="code-box">LD X0
+MOV K100 D0
+ADD D0 K50 D2
+CMP D2 K200 M0</pre>
+<ol class="step-list"><li>X0 ON → ghi 100 vào D0.</li><li>D0 + 50 → D2 = 150.</li><li>CMP so sánh D2 với 200 và tạo kết quả tại các bit trạng thái theo cú pháp.</li></ol></div>
+<div class="learning-section"><h3>2. K và H</h3><div class="learning-grid"><div class="learning-box"><b>K</b>Hằng số thập phân, ví dụ K100.</div><div class="learning-box"><b>H</b>Hằng số hexadecimal, ví dụ H64.</div></div></div>
+<div class="learning-section"><h3>3. 16 bit và 32 bit</h3><p>Không được chỉ nhìn tên D0 rồi giả định instruction nào cũng dùng 16 bit. Phải xem cú pháp instruction và model PLC. Với dữ liệu 32 bit thường sử dụng vùng thanh ghi liên tiếp theo quy định của instruction.</p></div>
+<div class="learning-section"><h3>4. Debug</h3><div class="result-box">Trong GX Works2 Monitor, xem D0/D1/D2 trước và sau khi rung chạy để biết dữ liệu thay đổi ở đâu.</div></div>
+<div class="practice-box"><b>Bài tập:</b> Khi X0 ON, D0=120; D1=30; tính D2=D0+D1; nếu D2≥150 thì bật Y0.</div>
+`)
+else if(page==="applied") html=layout("🧩 Applied / FNC Instructions",`
+<div class="topic-hero"><h2>Applied / FNC Instructions</h2><p><b>Chuẩn học:</b> chức năng → hình → cú pháp đã kiểm chứng → operand → kết quả → ví dụ → ứng dụng → lỗi/debug → bài tập.</p></div>
+<div class="notice"><b>🔎 Đã kiểm tra lại:</b> tên/FNC được đối chiếu bảng Application Instructions của Mitsubishi. Các lệnh chưa xác minh riêng không bị tự dựng cú pháp.</div>
+<div class="grid">${manualCatalog.map(i=>`<div class="card" onclick="openInstruction('${i[0]}')"><span class="tag">${esc(i[0])}</span><h3>${esc(i[1])}</h3><p>${esc(i[2])}</p><p>${esc(i[3])}</p><p><b>📖 Mở bài học →</b></p></div>`).join("")}</div>
+`)
+else if(page==="advanced") html=layout("🚀 Điều khiển nâng cao",`
+<div class="topic-hero"><h2>Điều khiển nâng cao</h2><p><b>Mục tiêu:</b> biết khi nào cần high-speed, pulse/positioning, PID, RTC, analog, interrupt và communication.</p></div>
+<div class="learning-grid">
+${[
+["High-speed counter","Đọc xung encoder/bộ đếm tốc độ cao; phải kiểm tra ngõ vào và giới hạn phần cứng."],
+["PLSY / PWM / PLSR","Phát xung; phân biệt tần số, duty và tăng/giảm tốc."],
+["DRVI / DRVA","Di chuyển tương đối/tuyệt đối; cần xác định pulse output, tốc độ, vị trí."],
+["Servo / stepper","PLC phát lệnh; driver xử lý motor. Cần đồng bộ parameter PLC-driver."],
+["Analog","Đổi tín hiệu điện áp/dòng sang giá trị số và scale về đơn vị kỹ thuật."],
+["PID","Điều khiển nhiệt độ, áp suất, tốc độ theo feedback và setpoint."],
+["RTC","Đọc/ghi thời gian thực để lập lịch và ghi log."],
+["Interrupt","Xử lý sự kiện cần phản ứng nhanh hơn scan thông thường."],
+["Communication","Trao đổi dữ liệu PLC-HMI-inverter-PC theo protocol/module phù hợp."]
+].map((x,i)=>`<div class="lesson-box"><h3>${i+1}. ${x[0]}</h3><p>${x[1]}</p><p><b>Học theo:</b> phần cứng → parameter → wiring → instruction → Monitor → test.</p></div>`).join("")}
+</div>
+<div class="learning-section"><h3>Ví dụ phát xung</h3><pre class="code-box">LD M0
+PLSY K1000 K200 Y0</pre><ol class="step-list"><li>M0 cho phép chạy.</li><li>K1000 là tham số tốc độ/tần số theo cú pháp instruction.</li><li>K200 là tham số số xung/hoặc tham số liên quan tùy instruction và mode.</li><li>Y0 là ngõ phát xung; phải kiểm tra model FX hỗ trợ đúng chức năng.</li></ol></div>
+<div class="error-box"><b>Không được áp dụng máy thật chỉ từ ví dụ:</b> positioning, servo, high-speed và analog phải đối chiếu đúng model PLC, module, parameter và manual phần cứng.</div>
+<div class="practice-box"><b>Bài tập:</b> lập bảng I/O và parameter cần kiểm tra trước khi chạy một motor stepper bằng DRVI.</div>
+`)
+else if(page==="hmi") html=layout("🖥 HMI & Communication",`
+<div class="topic-hero"><h2>HMI & Communication</h2><p><b>Mục tiêu:</b> hiểu HMI không thay PLC logic; HMI đọc/ghi device PLC qua giao tiếp phù hợp.</p></div>
+<div class="learning-section"><h3>1. Mapping cơ bản</h3>
+<div class="lesson-image"><div class="lesson-image-title"><b>PLC ↔ HMI</b><span>Device mapping</span></div><svg viewBox="0 0 1100 250" class="lesson-svg"><rect width="1100" height="250" fill="#fff"/><rect x="120" y="65" width="250" height="100" fill="#e8eef8" stroke="#222"/><rect x="730" y="65" width="250" height="100" fill="#eef7e8" stroke="#222"/><text x="205" y="120" font-size="28">HMI</text><text x="815" y="120" font-size="28">PLC FX</text><path d="M370 115H730" stroke="#111" stroke-width="4"/><text x="470" y="95" font-size="18">RS / Ethernet / protocol</text><text x="470" y="145" font-size="17">M, D, X, Y tùy mapping</text></svg></div></div>
+<div class="learning-section"><h3>2. Quy trình cấu hình</h3><ol class="step-list"><li>Xác định model PLC.</li><li>Xác định cổng/module.</li><li>Chọn driver/protocol trên HMI.</li><li>Thiết lập communication parameter.</li><li>Map device.</li><li>Test đọc D/M trước, sau đó mới cho phép ghi.</li></ol></div>
+<div class="learning-section"><h3>3. Ví dụ</h3><pre class="code-box">HMI Numeric Input → D0
+HMI Start Button   → M0
+HMI Lamp           ← Y0
+HMI Value Display  ← D10</pre></div>
+<div class="error-box"><b>Lỗi thường gặp:</b> sai station, baudrate, parity, protocol, cable, device address hoặc quyền ghi.</div>
+<div class="practice-box"><b>Bài tập:</b> thiết kế màn hình có Start, Stop, Auto/Manual, giá trị D0 và đèn báo Y0.</div>
+`)
+else if(page==="practice") html=layout("🧪 Bài tập thực hành",`
+<div class="topic-hero"><h2>Bài tập PLC</h2><p><b>Mục tiêu:</b> chuyển kiến thức thành chương trình Ladder có thể test bằng GX Works2/PLC.</p></div>
+<div class="grid">${practices.map((p,i)=>`<div class="card" onclick="show('p-${i}')"><span class="tag">${p[1]}</span><h3>${p[0]} — ${p[2]}</h3><p>${p[3]}</p><p><b>Quy trình làm:</b> phân tích I/O → viết logic → test từng network → Monitor → tìm lỗi.</p></div>`).join("")}</div>
+<div class="learning-section"><h3>Chuẩn giải bài</h3><ol class="step-list"><li>Viết yêu cầu bằng ngôn ngữ bình thường.</li><li>Lập bảng Input/Output.</li><li>Chia trạng thái máy.</li><li>Vẽ Ladder.</li><li>Viết code.</li><li>Test từng điều kiện.</li><li>Thêm interlock và xử lý lỗi.</li></ol></div>
+`)
+else if(page==="trouble") html=layout("🛠 Troubleshooting",`
+<div class="topic-hero"><h2>Troubleshooting PLC</h2><p><b>Mục tiêu:</b> tìm lỗi theo trình tự thay vì đoán.</p></div>
+<div class="learning-section"><h3>1. Quy trình 7 bước</h3><ol class="step-list"><li>Kiểm tra nguồn và RUN/STOP.</li><li>Kiểm tra error code.</li><li>Monitor input X.</li><li>Monitor bit logic M/S.</li><li>Monitor T/C.</li><li>Monitor D.</li><li>Kiểm tra output Y và wiring tải.</li></ol></div>
+<div class="learning-section"><h3>2. Bảng chẩn đoán</h3><table><tr><th>Hiện tượng</th><th>Cách kiểm tra</th><th>Nguyên nhân thường gặp</th></tr>${[["PLC không RUN","Nguồn, mode, error LED, parameter","STOP, lỗi chương trình, parameter"],["Input không ON","Đo nguồn sensor, xem LED X","NPN/PNP, COM/SS, dây"],["Output không ON","Monitor rung + Y + terminal","Điều kiện sai, interlock, wiring"],["Timer không chạy","Monitor rung và T","Enable/reset/time base"],["Counter không đếm","Monitor xung và C","Không có cạnh phù hợp, reset"],["Y0 bật rồi tắt","Tìm tất cả network ghi Y0","Có nhiều OUT hoặc logic sau ghi đè"],["D sai giá trị","Monitor trước/sau instruction","MOV/ADD sai operand, scan nhiều lần"],["Communication lỗi","Cable, station, protocol, parameter","Sai cấu hình hoặc module"]].map(x=>`<tr><td><b>${x[0]}</b></td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join("")}</table></div>
+<div class="learning-section"><h3>3. Ví dụ lỗi Y0 bật rồi tắt</h3><pre class="code-box">Network 1:
+LD X0
+OUT Y0
+
+Network 2:
+LD X1
+OUT Y0</pre><ol class="step-list"><li>X0 ON → network 1 làm Y0 ON.</li><li>PLC chạy tiếp network 2.</li><li>Nếu X1 OFF → network 2 có thể làm Y0 OFF tùy cấu trúc lệnh.</li><li>Kết quả cuối scan không nhất thiết là kết quả network đầu tiên.</li></ol></div>
+<div class="practice-box"><b>Bài tập:</b> tạo lỗi có hai network cùng tác động Y0, dùng Monitor để xác định network nào đang quyết định trạng thái cuối.</div>
+`)
+else if(page==="dictionary"){
+  const groups=[...new Set(manualCatalog.map(x=>x[2]))].sort();
+  html=layout("📚 Instruction Dictionary",`
+    <p>Tra cứu toàn bộ lệnh theo FNC, mnemonic, nhóm và chức năng.</p>
+    <div class="dict-toolbar">
+      <div class="dict-search"><span>🔎</span><input id="dictSearch" placeholder="Ví dụ: MOV, FNC12, timer, compare..."></div>
+      <select id="dictGroup"><option value="">Tất cả nhóm</option>${groups.map(g=>`<option value="${esc(g)}">${esc(g)}</option>`).join("")}</select>
+      <select id="dictLimit"><option value="all">Tất cả</option><option value="25">25</option><option value="50">50</option><option value="100">100</option></select>
+    </div>
+    <div id="dictSummary" class="dict-summary"></div>
+    <div class="table-wrap"><table class="dict-table">
+      <thead><tr><th>FNC</th><th>Mnemonic</th><th>Nhóm</th><th>Chức năng</th><th></th></tr></thead>
+      <tbody id="dictBody"></tbody>
+    </table></div>`);
+
+  // Insert Dictionary UI before querying its elements.
+  a.innerHTML=html;
+
+  const body=document.getElementById("dictBody");
+  const search=document.getElementById("dictSearch");
+  const group=document.getElementById("dictGroup");
+  const limit=document.getElementById("dictLimit");
+  const summary=document.getElementById("dictSummary");
+
+  function draw(){
+    const q=(search.value||"").trim().toLowerCase();
+    const g=group.value;
+    let rows=manualCatalog.filter(x=>{
+      const hay=(x[0]+" "+x[1]+" "+x[2]+" "+x[3]).toLowerCase();
+      return (!q||hay.includes(q))&&(!g||x[2]===g);
+    });
+    const total=rows.length;
+    if(limit.value!=="all") rows=rows.slice(0,Number(limit.value));
+    summary.innerHTML=`Hiển thị <b>${rows.length}</b> / ${total} — tổng <b>${manualCatalog.length}</b> lệnh`;
+    body.innerHTML=rows.map(x=>`
+      <tr>
+        <td><code>${esc(x[0])}</code></td>
+        <td><button class="mnemonic-btn" onclick="openInstruction('${x[0]}')">${esc(x[1])}</button></td>
+        <td><span class="group-pill">${esc(x[2])}</span></td>
+        <td>${esc(x[3])}</td>
+        <td><button class="detail-btn" onclick="openInstruction('${x[0]}')">📖 Chi tiết</button></td>
+      </tr>`).join("") || `<tr><td colspan="5" class="empty-row">Không tìm thấy lệnh.</td></tr>`;
+  }
+  search.addEventListener("input",draw);
+  group.addEventListener("change",draw);
+  limit.addEventListener("change",draw);
+  draw();
+}
+else if(page==="reference") html=layout("📖 Tra cứu nhanh",`<h2>Device</h2><p>${devices.map(d=>`<span class="tag">${d[0]}</span>`).join("")}</p><h2>Lệnh</h2><p>${instructions.map(i=>`<span class="tag">${i[0]}</span>`).join("")}</p><h2>Nguyên tắc debug</h2><pre>Input → M/S → Timer/Counter → D → Logic → Output</pre>`);
+else if(page.startsWith("ins-")){let i=instructions.filter(x=>x[1]==="Basic")[+page.split("-")[1]],r=richExamples[i[0]];html=layout("⚡ "+(r?r.title:i[0]),`<span class="tag">${i[1]}</span><h2>1. Chức năng</h2><p>${i[3]}</p><h2>2. Cú pháp / ví dụ</h2><pre>${esc(r?r.syntax:i[2])}</pre>${r?`<h2>3. Giải thích từng dòng</h2><ol>${r.explain.map(x=>`<li>${x}</li>`).join("")}</ol><h2>4. Kết quả</h2><div class="notice">${r.result}</div><h2>5. Ứng dụng thực tế</h2><p>${r.use}</p>`:""}<h2>6. Cách debug</h2><p>Online/Monitor chương trình và quan sát từng device liên quan. Nếu output không đúng, kiểm tra điều kiện rung, trạng thái M/T/C/D và các rung khác có tác động cùng device.</p>`)}
+else if(page.startsWith("catalog-")){
+  const key=decodeURIComponent(page.substring("catalog-".length));
+  const item=manualCatalog.find(a=>a[0]===key||a[1]===key);
+  const name=item?item[1]:key;
+  const v=verifiedSyntax[name], r=richExamples[name]||extraExamples[name], less=lessonData[name]||[];
+  const syntax=v?v[0]:(r?r.syntax:""), explanation=v?v[1]:"", result=v?v[2]:(r?r.result:"Kết quả phụ thuộc operand và điều kiện thực thi.");
+  html=layout("📘 "+name,`
+    <div class="topic-hero"><h2>${esc(name)}</h2><p><span class="tag">${item?item[0]:"Instruction"}</span> <span class="tag">${item?item[2]:""}</span></p><p>${item?esc(item[3]):"Tra cứu instruction."}</p></div>
+    <div class="learning-section"><h3>1. Chức năng của lệnh</h3><p>${item?esc(item[3]):"Instruction PLC."}</p></div>
+    <div class="learning-section"><h3>2. Hình minh họa cấu trúc</h3>${realLadderExamples[name]?realLadderImage(realLadderExamples[name][0],realLadderExamples[name][1],realLadderExamples[name][2]):""}${commandDiagram(name,item?item[0]:"",item?item[2]:"",item?item[3]:"")}<div class="notice"><b>⚠️</b> Hình giúp đọc rung; operand phải theo đúng Instruction Format, model và version PLC.</div></div>
+    <div class="learning-section"><h3>3. Cú pháp đã kiểm chứng</h3>${syntax?`<pre class="code-box">${esc(syntax)}</pre><p>${esc(explanation)}</p>`:`<div class="error-box"><b>Không tự dựng cú pháp.</b> Lệnh này cần đối chiếu Instruction Format trong manual JY997D16601R theo model PLC.</div>`}</div>
+    <div class="learning-section"><h3>4. Giải thích từng operand / từng phần</h3><ol class="step-list"><li>Xác định điều kiện kích hoạt.</li><li>Xác định source/destination và thứ tự operand.</li><li>Kiểm tra device được phép.</li><li>Kiểm tra 16/32-bit, pulse/continuous và giới hạn model.</li>${v?`<li>${esc(explanation)}</li>`:""}</ol></div>
+    <div class="learning-section"><h3>5. Kết quả hoạt động</h3><div class="result-box">${esc(result)}</div></div>
+    <div class="learning-section"><h3>6. Ví dụ thực tế</h3>${less.length?less.map(e=>`<div class="example"><h4>${esc(e[0]||"Ví dụ")}</h4><pre class="code-box">${esc(e[1]||"")}</pre><p>${esc(e[2]||"")}</p></div>`).join(""):`<p>Chưa hiển thị ví dụ cú pháp tự dựng để tránh đưa sai lệnh.</p>`}</div>
+    <div class="learning-section"><h3>7. Ứng dụng</h3><p>${esc(r?r.use:"Dùng theo chức năng của instruction.")}</p></div>
+    <div class="learning-section"><h3>8. Lỗi thường gặp & Debug</h3><div class="error-box"><ul><li>Sai thứ tự operand.</li><li>Sai device/vùng device.</li><li>Nhầm 16/32-bit.</li><li>Nhầm continuous/pulse.</li><li>Không kiểm tra model/version.</li><li>Không kiểm tra phần cứng khi dùng high-speed/positioning.</li></ul></div><p>Monitor command input → source → destination → trạng thái/cờ → giá trị trước/sau.</p></div>
+    <div class="learning-section"><h3>9. Bài tập</h3><div class="practice-box">Viết một ví dụ cho <b>${esc(name)}</b>, xác định từng operand, chạy Monitor và ghi lại kết quả.</div></div>
+    <div class="learning-section"><h3>10. Khả năng tương thích</h3><p>Danh sách FNC được đối chiếu với bảng Application Instructions chính thức; từng instruction vẫn cần kiểm tra model/version cụ thể.</p></div>`);
+}
+else if(page.startsWith("detail-")){let name=decodeURIComponent(page.slice(7)),i=instructions.find(x=>x[0]===name),r=richExamples[name];html=layout("🧩 "+(r?r.title:name),`<span class="tag">${i?i[1]:"Instruction"}</span><h2>1. Chức năng</h2><p>${i?i[3]:"Lệnh xử lý chương trình PLC."}</p><h2>2. Cú pháp / ví dụ</h2><pre>${esc(r?r.syntax:(i?i[2]:"X0 → instruction"))}</pre><h2>3. Giải thích</h2>${r?`<ol>${r.explain.map(x=>`<li>${x}</li>`).join("")}</ol>`:`<p>Lệnh này thuộc nhóm <b>${i?i[1]:"Applied"}</b>. Hãy xem cú pháp trên như ví dụ minh họa; operand, phạm vi device và độ rộng dữ liệu phải kiểm tra theo model PLC.</p><ol><li>Xác định điều kiện kích hoạt instruction.</li><li>Xác định device nguồn và device đích.</li><li>Monitor giá trị trước và sau khi thực thi.</li><li>Kiểm tra reset/điều kiện lặp để tránh thực thi ngoài ý muốn.</li></ol>`}<h2>4. Kết quả</h2><div class="notice">${r?r.result:"Kết quả phụ thuộc giá trị nguồn, operand và điều kiện thực thi."}</div><h2>5. Ứng dụng</h2><p>${r?r.use:"Dùng trong các chương trình điều khiển và xử lý dữ liệu theo chức năng của instruction."}</p><h2>6. Lưu ý kỹ thuật</h2><ul><li>Kiểm tra đúng dòng PLC FX và phiên bản instruction hỗ trợ.</li><li>Kiểm tra kiểu dữ liệu, 16/32-bit và vùng device.</li><li>Không áp dụng trực tiếp ví dụ trên máy thật nếu chưa kiểm tra output, tải và điều kiện an toàn.</li></ul><h2>7. Debug</h2><p>Monitor rung, device nguồn/đích và giá trị thanh ghi; nếu kết quả sai, kiểm tra điều kiện kích hoạt và các rung khác cùng tác động vào device.</p>`)}
+else if(page.startsWith("p-")){let p=practices[+page.split("-")[1]];html=layout("🧪 "+p[0]+" — "+p[2],`<span class="tag">${p[1]}</span><h2>Yêu cầu</h2><p>${p[3]}</p><h2>Gợi ý Ladder</h2><pre>${esc(p[4])}</pre><h2>Cách kiểm tra</h2><ol><li>Online/Monitor chương trình.</li><li>Kiểm tra từng X/M/T/C/D.</li><li>Thay đổi input bằng nút hoặc simulator nếu có.</li><li>Kiểm tra output và điều kiện reset.</li></ol>`)}
+if(page!=="dictionary" && page!=="structure") a.innerHTML=html;
+if(page==="structure"){ a.innerHTML=html; bindStructureFilters(); renderStructure(); }
+document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("search").addEventListener("input",e=>{
+let q=e.target.value.trim().toLowerCase();
+if(!q){show("home");return}
+let hits=[];
+instructions.forEach((x,i)=>{if(x.join(" ").toLowerCase().includes(q))hits.push({title:"⚡ "+x[0],desc:x[3],page:x[1]==="Basic"?"ins-"+instructions.filter(y=>y[1]==="Basic").indexOf(x):"applied"})});
+devices.forEach(x=>{if(x.join(" ").toLowerCase().includes(q))hits.push({title:"🧠 "+x[0]+" — "+x[1],desc:x[3],page:"devices"})});
+practices.forEach((x,i)=>{if(x.join(" ").toLowerCase().includes(q))hits.push({title:"🧪 "+x[0]+" — "+x[2],desc:x[3],page:"p-"+i})});manualCatalog.forEach(x=>{if(x.join(" ").toLowerCase().includes(q))hits.push({title:"📘 "+x[0]+" — "+x[1],desc:x[3],page:"catalog-"+encodeURIComponent(x[0])})});
+document.getElementById("app").innerHTML=`<h1>Kết quả tìm kiếm</h1><p class="muted">${hits.length} kết quả cho “${esc(q)}”</p>${hits.length?hits.map(h=>`<div class="result" onclick="show('${h.page}')"><b>${h.title}</b><div class="muted">${h.desc}</div></div>`).join(""):"<p>Không tìm thấy. Thử từ khóa khác như MOV, M0, Timer, D0, NPN...</p>"}`;
+});
+nav();show("home");
+
+// Route fix for Instruction Dictionary / Tra cứu nhanh
+window.__plcCatalogRouteFix = true;
+
+function ladderImage(title, rung){
+  const safeTitle=esc(title||"Ladder");
+  const safeRung=esc(rung||"");
+  return `<div class="ladder-shot">
+    <div class="ladder-shot-title">
+      <span>GX Works2 — Ladder</span>
+      <span>${safeTitle}</span>
+    </div>
+    <svg class="ladder-svg" viewBox="0 0 1100 210" role="img" aria-label="${safeTitle}">
+      <rect x="0" y="0" width="1100" height="210" rx="8" class="gx-bg"/>
+      <line x1="55" y1="35" x2="55" y2="175" class="rail"/>
+      <line x1="1045" y1="35" x2="1045" y2="175" class="rail"/>
+      <line x1="55" y1="105" x2="1045" y2="105" class="wire"/>
+      <text x="78" y="58" class="addr">0000</text>
+      <text x="78" y="82" class="addr">Step</text>
+      <text x="550" y="198" text-anchor="middle" class="caption">${safeRung}</text>
+      <g class="ladder-content">
+        <text x="155" y="94" class="contact">| |</text>
+        <text x="165" y="132" class="device">X0</text>
+        <text x="420" y="94" class="block">[ MOV K100 D0 ]</text>
+        <text x="820" y="94" class="coil">OUT Y0</text>
+      </g>
+    </svg>
+  </div>`;
+}
+
+function ladderImageCustom(title, parts){
+  const safeTitle=esc(title||"Ladder");
+  const p=(parts||[]).map(x=>`<text x="${x.x}" y="${x.y}" class="${x.cls||"device"}">${esc(x.text)}</text>`).join("");
+  return `<div class="ladder-shot">
+    <div class="ladder-shot-title"><span>GX Works2 — Ladder</span><span>${safeTitle}</span></div>
+    <svg class="ladder-svg" viewBox="0 0 1100 210" role="img" aria-label="${safeTitle}">
+      <rect x="0" y="0" width="1100" height="210" rx="8" class="gx-bg"/>
+      <line x1="55" y1="35" x2="55" y2="175" class="rail"/>
+      <line x1="1045" y1="35" x2="1045" y2="175" class="rail"/>
+      <line x1="55" y1="105" x2="1045" y2="105" class="wire"/>
+      <text x="78" y="58" class="addr">0000</text>
+      ${p}
+    </svg>
+  </div>`;
+}
+
+const ladderExamples={"LD":["LD — tiếp điểm thường mở",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:390,y:98,cls:"coil",text:"OUT Y0"}]],"LDI":["LDI — tiếp điểm thường đóng",[{x:145,y:98,cls:"contact",text:"|/|"},{x:150,y:132,cls:"device",text:"X0"},{x:390,y:98,cls:"coil",text:"OUT Y0"}]],"AND":["AND — nối tiếp hai điều kiện",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:305,y:98,cls:"contact",text:"| |"},{x:310,y:132,cls:"device",text:"X1"},{x:500,y:98,cls:"coil",text:"OUT Y0"}]],"OR":["OR — hai nhánh song song",[{x:145,y:75,cls:"contact",text:"| |"},{x:150,y:58,cls:"device",text:"X0"},{x:145,y:135,cls:"contact",text:"| |"},{x:150,y:158,cls:"device",text:"X1"},{x:500,y:98,cls:"coil",text:"OUT Y0"}]],"OUT":["OUT — xuất tín hiệu Y0",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:470,y:98,cls:"coil",text:"OUT Y0"}]],"SET":["SET — giữ Y0 ON",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:470,y:98,cls:"coil",text:"SET Y0"}]],"RST":["RST — reset Y0 OFF",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:470,y:98,cls:"coil",text:"RST Y0"}]],"PLS":["PLS — tạo xung một chu kỳ quét",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:470,y:98,cls:"coil",text:"PLS M0"}]],"MOV":["MOV — di chuyển K100 vào D0",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"MOV K100 D0"}]],"CMP":["CMP — so sánh D0 với K100",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"CMP D0 K100 M0"}]],"ADD":["ADD — cộng K10 vào D0",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"ADD K10 D0 D10"}]],"SUB":["SUB — trừ K10",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"SUB K10 D0 D10"}]],"MUL":["MUL — nhân dữ liệu",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"MUL D0 K10 D10"}]],"DIV":["DIV — chia dữ liệu",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"DIV D0 K10 D10"}]],"SFTL":["SFTL — dịch bit sang trái",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"X0"},{x:420,y:98,cls:"block",text:"SFTL M0 K4"}]],"PLSY":["PLSY — phát xung tốc độ cố định",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"M0"},{x:420,y:98,cls:"block",text:"PLSY K1000 K200 Y0"}]],"DRVI":["DRVI — di chuyển tương đối",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"M0"},{x:420,y:98,cls:"block",text:"DRVI K1000 K500 Y0"}]],"DRVA":["DRVA — di chuyển tuyệt đối",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"M0"},{x:420,y:98,cls:"block",text:"DRVA K10000 K500 Y0"}]],"PID":["PID — điều khiển PID",[{x:145,y:98,cls:"contact",text:"| |"},{x:150,y:132,cls:"device",text:"M100"},{x:420,y:98,cls:"block",text:"PID D0 D100 D200"}]]};
+
+
+const realLadderExamples={"LD":["assets/ladder_x000_y000.jpg","LD / OUT","X000 ON → Y000 ON"],"OUT":["assets/ladder_x000_y000.jpg","OUT Y000","Ví dụ thực tế: X000 điều khiển Y000"]};
+
+
+
+function standardTopic(title,goal,concept,diagram,code,explain,result,applications,errors,practice){
+  return `<div class="topic-hero"><h2>${esc(title)}</h2><p><b>Mục tiêu:</b> ${esc(goal)}</p></div>
+  <div class="learning-section"><h3>1. Kiến thức cần nắm</h3><p>${concept}</p></div>
+  ${diagram||""}
+  <div class="learning-section"><h3>3. Ví dụ Mitsubishi FX</h3><pre class="code-box">${esc(code)}</pre></div>
+  <div class="learning-section"><h3>4. Giải thích từng dòng / từng phần</h3><ol class="step-list">${explain.map(x=>`<li>${x}</li>`).join("")}</ol></div>
+  <div class="learning-section"><h3>5. Kết quả hoạt động</h3><div class="result-box">${result}</div></div>
+  <div class="learning-section"><h3>6. Ứng dụng thực tế</h3><ul>${applications.map(x=>`<li>${x}</li>`).join("")}</ul></div>
+  <div class="learning-section"><h3>7. Lỗi thường gặp</h3><div class="error-box"><ul>${errors.map(x=>`<li>${x}</li>`).join("")}</ul></div></div>
+  <div class="learning-section"><h3>8. Bài tập</h3><div class="practice-box">${practice}</div></div>`;
+}
+
+function ladderLessonSvg(type,title){
+  const common=`<rect width="1100" height="300" class="lesson-bg"/>
+    <line x1="55" y1="35" x2="55" y2="255" class="lesson-rail"/>
+    <line x1="1045" y1="35" x2="1045" y2="255" class="lesson-rail"/>`;
+  let body="";
+  if(type==="and"){
+    body=`<line x1="55" y1="105" x2="1045" y2="105" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000</text>
+      <text x="145" y="98" class="lesson-contact">| |</text><text x="150" y="132" class="lesson-dev">X0</text>
+      <text x="300" y="98" class="lesson-contact">| |</text><text x="305" y="132" class="lesson-dev">X1</text>
+      <text x="520" y="98" class="lesson-coil">( Y0 )</text>`;
+  }else if(type==="or"){
+    body=`<line x1="55" y1="82" x2="1045" y2="82" class="lesson-wire"/>
+      <line x1="55" y1="150" x2="1045" y2="150" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000</text>
+      <text x="145" y="75" class="lesson-contact">| |</text><text x="150" y="55" class="lesson-dev">X0</text>
+      <text x="145" y="143" class="lesson-contact">| |</text><text x="150" y="177" class="lesson-dev">X1</text>
+      <text x="520" y="100" class="lesson-coil">( Y0 )</text>`;
+  }else if(type==="hold"){
+    body=`<line x1="55" y1="105" x2="1045" y2="105" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000</text>
+      <text x="130" y="98" class="lesson-contact">|/|</text><text x="135" y="132" class="lesson-dev">X1 STOP</text>
+      <text x="300" y="98" class="lesson-contact">| |</text><text x="305" y="132" class="lesson-dev">X0 START</text>
+      <text x="450" y="98" class="lesson-contact">| |</text><text x="455" y="132" class="lesson-dev">Y0 HOLD</text>
+      <text x="650" y="98" class="lesson-coil">( Y0 )</text>`;
+  }else if(type==="interlock"){
+    body=`<line x1="55" y1="85" x2="1045" y2="85" class="lesson-wire"/>
+      <line x1="55" y1="155" x2="1045" y2="155" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000 / 0001</text>
+      <text x="135" y="78" class="lesson-contact">| |</text><text x="140" y="55" class="lesson-dev">X0</text>
+      <text x="300" y="78" class="lesson-contact">|/|</text><text x="305" y="55" class="lesson-dev">Y1</text>
+      <text x="470" y="78" class="lesson-coil">( Y0 )</text>
+      <text x="135" y="148" class="lesson-contact">| |</text><text x="140" y="180" class="lesson-dev">X1</text>
+      <text x="300" y="148" class="lesson-contact">|/|</text><text x="305" y="180" class="lesson-dev">Y0</text>
+      <text x="470" y="148" class="lesson-coil">( Y1 )</text>`;
+  }else if(type==="toggle"){
+    body=`<line x1="55" y1="105" x2="1045" y2="105" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000</text>
+      <text x="145" y="98" class="lesson-contact">| |</text><text x="150" y="132" class="lesson-dev">X0</text>
+      <text x="400" y="98" class="lesson-block">ALT Y0</text>
+      <text x="700" y="98" class="lesson-note">Nhấn 1 lần → ON</text>
+      <text x="700" y="128" class="lesson-note">Nhấn lần 2 → OFF</text>`;
+  }else if(type==="oneshot"){
+    body=`<line x1="55" y1="105" x2="1045" y2="105" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">0000</text>
+      <text x="145" y="98" class="lesson-contact">| |</text><text x="150" y="132" class="lesson-dev">X0</text>
+      <text x="400" y="98" class="lesson-block">PLS M0</text>
+      <text x="650" y="98" class="lesson-note">M0 ON = 1 scan</text>
+      <text x="650" y="128" class="lesson-note">X0 giữ ON → M0 OFF</text>`;
+  }else if(type==="sequence"){
+    body=`<line x1="55" y1="80" x2="1045" y2="80" class="lesson-wire"/>
+      <line x1="55" y1="150" x2="1045" y2="150" class="lesson-wire"/>
+      <text x="85" y="58" class="lesson-addr">STEP 0</text>
+      <text x="145" y="73" class="lesson-contact">| |</text><text x="150" y="50" class="lesson-dev">X0</text>
+      <text x="390" y="73" class="lesson-block">SET S10</text>
+      <text x="85" y="128" class="lesson-addr">STEP 1</text>
+      <text x="145" y="143" class="lesson-contact">| |</text><text x="150" y="178" class="lesson-dev">S10</text>
+      <text x="390" y="143" class="lesson-block">STL S10 → Y0</text>`;
+  }
+  return `<div class="lesson-image"><div class="lesson-image-title"><b>GX Works2-style Ladder</b><span>${esc(title)}</span></div><svg viewBox="0 0 1100 300" class="lesson-svg">${common}${body}</svg></div>`;
+}
+
+function commandDiagram(name,fnc,group,desc){
+  const v=verifiedSyntax[name], syntax=v?v[0]:"";
+  const explanation=v?v[1]:"Cú pháp operand của lệnh này chưa được tự dựng. Xem Instruction Format trong manual để tránh dùng sai cấu trúc.";
+  const shown=syntax||("FNC "+String(fnc||"").replace("FNC","")+" "+name);
+  return `<div class="command-diagram"><div class="command-diagram-head"><b>📐 Hình minh họa cấu trúc lệnh</b><span>${esc(fnc)} · ${esc(group||"PLC")}</span></div><svg viewBox="0 0 1100 250" class="command-svg"><rect width="1100" height="250" class="svg-bg"/><line x1="55" y1="35" x2="55" y2="180" class="svg-rail"/><line x1="1045" y1="35" x2="1045" y2="180" class="svg-rail"/><line x1="55" y1="105" x2="1045" y2="105" class="svg-wire"/><text x="78" y="58" class="svg-address">0000</text><text x="145" y="98" class="contact">| |</text><text x="150" y="135" class="device">X0</text><text x="410" y="98" class="block">${esc(shown)}</text><text x="550" y="190" text-anchor="middle" class="svg-desc">${esc(explanation)}</text><text x="550" y="220" text-anchor="middle" class="svg-code">${esc(syntax||"X0 → instruction")}</text></svg></div>`;
+}
+
+function realLadderImage(src,title,caption){
+  return `<div class="real-ladder-shot">
+    <div class="real-ladder-title"><span>📷 GX Works2 — ảnh Ladder thực tế</span><span>${esc(title||"Ví dụ")}</span></div>
+    <img src="${src}" alt="${esc(title||"Ảnh Ladder GX Works2")}" loading="lazy">
+    ${caption?`<div class="real-ladder-caption">${esc(caption)}</div>`:""}
+  </div>`;
+}
+
+function autoLadderImage(name, fnc, group, desc){
+  const n=String(name||"").toUpperCase();
+  let op=n, left="X0", mode="instruction";
+  if(["CJ","CALL","SRET","IRET","EI","DI","FEND","WDT","FOR","NEXT"].includes(n)) mode="flow";
+  else if(["CMP","ZCP","ECMP","EZCP","LD=","LD>","LD<","LD<>","LD<=","LD>=","AND=","AND>","AND<","AND<>","AND<=","AND>=","OR=","OR>","OR<","OR<>","OR<=","OR>="].includes(n)) mode="compare";
+  else if(["ADD","SUB","MUL","DIV","INC","DEC","WAND","WOR","WXOR","NEG","EADD","ESUB","EMUL","EDIV","ESQR","ENEG"].includes(n)) mode="math";
+  else if(["MOV","SMOV","CML","BMOV","FMOV","XCH","EMOV"].includes(n)) mode="move";
+  else if(["ROR","ROL","RCR","RCL","SFTR","SFTL","WSFR","WSFL","SFWR","SFRD","SFR","SFL"].includes(n)) mode="shift";
+  else if(["PLSY","PWM","PLSR","HSCS","HSCR","HSZ","SPD","DSZR","DVIT","TBL","ABS","ZRN","PLSV","DRVI","DRVA"].includes(n)) mode="motion";
+  else if(["TCMP","TZCP","TADD","TSUB","HTOS","STOH","TRD","TWR","HOUR"].includes(n)) mode="rtc";
+  else if(["STR","VAL","$+","LEN","RIGHT","LEFT","MIDR","MIDW","INSTR","$MOV","ASCI","HEX","CCD"].includes(n)) mode="string";
+  else if(["PID"].includes(n)) mode="pid";
+  else mode="applied";
+
+  let lines="", code="", note="";
+  if(mode==="flow"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} ...</text>`;
+    code=`${op} ...`; note="Instruction điều khiển luồng chương trình.";
+  }else if(mode==="compare"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} D0 K100 M0</text>`;
+    code=`${op} D0 K100 M0`; note="Instruction xử lý điều kiện so sánh dữ liệu.";
+  }else if(mode==="math"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} D0 K10 D10</text>`;
+    code=`${op} D0 K10 D10`; note="Instruction xử lý dữ liệu số.";
+  }else if(mode==="move"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} D0 D10</text>`;
+    code=`${op} D0 D10`; note="Instruction truyền/chuyển đổi dữ liệu.";
+  }else if(mode==="shift"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} M0 K4</text>`;
+    code=`${op} M0 K4`; note="Instruction thao tác bit/word theo hướng dịch.";
+  }else if(mode==="motion"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">M0</text><text x="420" y="98" class="block">${esc(op)} K1000 K500 Y0</text>`;
+    code=`${op} K1000 K500 Y0`; note="Instruction liên quan xử lý tốc độ cao/chuyển động.";
+  }else if(mode==="rtc"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">M8000</text><text x="420" y="98" class="block">${esc(op)} D0 D10</text>`;
+    code=`${op} D0 D10`; note="Instruction xử lý dữ liệu thời gian thực.";
+  }else if(mode==="string"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">M0</text><text x="420" y="98" class="block">${esc(op)} D0 D10</text>`;
+    code=`${op} D0 D10`; note="Instruction xử lý dữ liệu ký tự/chuỗi.";
+  }else if(mode==="pid"){
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">M100</text><text x="420" y="98" class="block">PID D0 D100 D200</text>`;
+    code=`PID D0 D100 D200`; note="Instruction điều khiển PID.";
+  }else{
+    lines=`<text x="145" y="98" class="contact">| |</text><text x="150" y="132" class="device">X0</text><text x="420" y="98" class="block">${esc(op)} ...</text>`;
+    code=`${op} ...`; note="Ví dụ minh họa cách gọi instruction trong một rung Ladder.";
+  }
+
+  return `<div class="ladder-shot">
+    <div class="ladder-shot-title"><span>GX Works2 — Ladder</span><span>${esc(fnc)} / ${esc(name)}</span></div>
+    <svg class="ladder-svg" viewBox="0 0 1100 210" role="img" aria-label="${esc(name)} Ladder">
+      <rect x="0" y="0" width="1100" height="210" rx="8" class="gx-bg"/>
+      <line x1="55" y1="35" x2="55" y2="175" class="rail"/>
+      <line x1="1045" y1="35" x2="1045" y2="175" class="rail"/>
+      <line x1="55" y1="105" x2="1045" y2="105" class="wire"/>
+      <text x="78" y="58" class="addr">0000</text>
+      ${lines}
+      <text x="550" y="190" text-anchor="middle" class="caption">${esc(code)} — ${esc(note)}</text>
+    </svg>
+  </div>`;
+}
+
+function openInstruction(key){
+  const item=manualCatalog.find(a=>a[0]===key||a[1]===key);
+  if(item) show("catalog-"+encodeURIComponent(item[0]));
+}
+</script>
+</body></html>
